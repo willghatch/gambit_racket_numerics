@@ -1,5 +1,6 @@
 #lang racket
 (require "_num_.rkt")
+(provide (all-defined-out))
 ;;;============================================================================
 
 ;;; File: "_num.scm"

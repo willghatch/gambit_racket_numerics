@@ -45,7 +45,7 @@
 (define @@fx-
   (case-lambda ((x) (fx* -1 x))
                ((l r) (fx- l r))))
-(define @@bignum.negative? negative?)
+(define @@bignum.negative? (lambda (x) (negative? (bignum-value x))))
 
 ; agnostic implementation
 (define (@@flonum->exact x)
