@@ -1,6 +1,7 @@
 #lang racket
 (require "_num_.rkt")
-(provide (all-defined-out))
+(require "translate.rkt")
+(provide @@= @@<)
 ;;;============================================================================
 
 ;;; File: "_num.scm"
@@ -274,7 +275,7 @@
   macro-no-check
   (@@pair? @@fail-check-number))
 
-#;(define-prim (@@< x y  (nan-result #f))
+(define-prim (@@< x y  (nan-result #f))
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -756,7 +757,7 @@
   macro-no-check
   (@@pair? @@fail-check-number))
 
-#;(define-prim (@@* x y)
+(define-prim (@@* x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -887,7 +888,7 @@
   (macro-force-vars (x)
     (@@square x)))
 
-#;(define-prim (@@negate x)
+(define-prim (@@negate x)
 
   (@@define-macro (type-error) `'(1))
 
@@ -5979,6 +5980,9 @@ ___RESULT = result;
 
 ;;; Bignum multiplication.
 
+; huge cheat
+(define-prim (@@bignum.* x y)
+  (from-rktnum (* (to-rktnum x) (to-rktnum y))))
 #;(define-prim (@@bignum.* x y)
 
   (define (fft-mul x y)
@@ -9482,14 +9486,14 @@ ___RESULT = result;
 (define (@@exact-int.= x y)
   (@@fx= 0 (@@exact-int.compare x y)))
 
-#;(define (@@exact-int.< x y)
+(define (@@exact-int.< x y)
   (@@fx= -1 (@@exact-int.compare x y)))
 
 (define (@@exact-int.compare x y)
 
   ;; returns -1 if x < y, 0 if x = y, or 1 if x > y
 
-  #;(define (compare x y x-smaller)
+  (define (compare x y x-smaller)
     (@@declare (not interrupts-enabled))
     (let ((x-digits (@@bignum.adigit-length x))
           (y-digits (@@bignum.adigit-length y)))
@@ -9502,10 +9506,6 @@ ___RESULT = result;
                      ((@@bignum.adigit-< y x i) 1)
                      (else
                       (loop (@@fx- i 1)))))))))
-  (define (compare x y x-smaller)
-    (cond ((< (abs (bignum-value x)) (abs (bignum-value y))) x-smaller)
-          ((> (abs (bignum-value x)) (abs (bignum-value y))) (@@fx- x-smaller))
-          ((= (abs (bignum-value x)) (abs (bignum-value y))) 0)))
   (if (@@fixnum? x)
       (if (@@fixnum? y)
           (cond ((@@fx< x y) -1)
@@ -9767,7 +9767,7 @@ ___RESULT = result;
        (@@= (macro-ratnum-denominator x)
             (macro-ratnum-denominator y))))
 
-#;(define-prim (@@ratnum.< x y)
+(define-prim (@@ratnum.< x y)
   (@@< (@@* (macro-ratnum-numerator x)
             (macro-ratnum-denominator y))
        (@@* (macro-ratnum-denominator x)
@@ -9815,7 +9815,7 @@ ___RESULT = result;
                 num
                 (macro-ratnum-make num den)))))))
 
-#;(define-prim (@@ratnum.* x y)
+(define-prim (@@ratnum.* x y)
   (let ((p (macro-ratnum-numerator x))
         (q (macro-ratnum-denominator x))
         (r (macro-ratnum-numerator y))
@@ -10277,7 +10277,7 @@ ___RESULT = result;
 #;(define-prim (@@fixnum->flonum x))
 #;(define-prim (@@fixnum->flonum-exact? x))
 
-#;(define-prim (@@ratnum->flonum x  (nonzero-fractional-part? #f))
+(define-prim (@@ratnum->flonum x  (nonzero-fractional-part? #f))
   (let* ((num (macro-ratnum-numerator x))
          (n (@@abs num))
          (d (macro-ratnum-denominator x))
@@ -10319,7 +10319,7 @@ ___RESULT = result;
         (f1 (@@arithmetic-shift n (@@fx- p)) d)
         (f1 n (@@arithmetic-shift d p)))))
 
-#;(define-prim (@@exact-int->flonum x  (nonzero-fractional-part? #f))
+(define-prim (@@exact-int->flonum x  (nonzero-fractional-part? #f))
 
   (define (f1 x)
     (let* ((w ;; 2^(w-1) <= x < 2^w
@@ -10510,7 +10510,7 @@ ___RESULT = result;
         (c (macro-cpxnum-real y)) (d (macro-cpxnum-imag y)))
     (@@make-rectangular (@@+ a c) (@@+ b d))))
 
-#;(define-prim (@@cpxnum.* x y)
+(define-prim (@@cpxnum.* x y)
   (let ((a (macro-cpxnum-real x)) (b (macro-cpxnum-imag x))
         (c (macro-cpxnum-real y)) (d (macro-cpxnum-imag y)))
     (@@make-rectangular (@@- (@@* a c) (@@* b d)) (@@+ (@@* a d) (@@* b c)))))

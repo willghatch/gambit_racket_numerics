@@ -17,7 +17,7 @@
        ((_ id val)
         #'(define id val)))))
 
-(struct bignum (value) #:transparent)
+(struct bignum (negative digits) #:transparent)
 
 (struct ratnum (numerator denominator) #:transparent)
 (define-syntax-rule (macro-ratnum-numerator x) (ratnum-numerator x))
@@ -29,15 +29,29 @@
 (define-syntax-rule (macro-cpxnum-imag x) (cpxnum-imag x))
 (define-syntax-rule (macro-cpxnum-make r i) (cpxnum r i))
 
+(define-syntax-rule (fixnum-fail exps ...)
+  (with-handlers ((exn:fail:contract:non-fixnum-result? (lambda (e) #f)))
+    exps ...))
+
+(define @@not not)
 (define @@fixnum? fixnum?)
 (define @@fx= fx=)
 (define @@fx< fx<)
+(define @@fx-? (case-lambda ((x) (fixnum-fail (fx- 0 x)))
+                            ((l r) (fixnum-fail (fx- l r)))))
+(define @@fxzero? (lambda (x) (fx= x 0)))
+(define @@fx*? (lambda (x y) (fixnum-fail (fx* x y))))
 (define @@flonum? flonum?)
 (define @@fixnum->flonum-exact? (lambda (x) (fx= (fl->fx (fx->fl x)) x)))
 (define @@fl= fl=)
+(define @@fl< fl<)
+(define @@fl* fl*)
 (define @@fixnum->flonum fx->fl)
 (define @@flnan? (lambda (x) (not (fl= x x))))
 (define @@flfinite? (lambda (x) (not (or (@@flnan? x) (fl= +inf.0 x) (fl= -inf.0 x)))))
+(define @@flpositive? (lambda (x) (< 0.0 x)))
+(define @@flnegative? (lambda (x) (> 0.0 x)))
+(define @@flzero? (lambda (x) (= 0.0 x)))
 (define @@bignum? bignum?)
 (define @@ratnum? ratnum?)
 (define @@cpxnum? cpxnum?)
@@ -45,7 +59,11 @@
 (define @@fx-
   (case-lambda ((x) (fx* -1 x))
                ((l r) (fx- l r))))
-(define @@bignum.negative? (lambda (x) (negative? (bignum-value x))))
+(define @@bignum.negative? (lambda (x) (bignum-negative x)))
+(define @@bignum.adigit-length (lambda (x) (bytes-length (bignum-digits x))))
+(define @@bignum.adigit-< (lambda (x y i) (fx< (bytes-ref (bignum-digits x) i)
+                                               (bytes-ref (bignum-digits y) i))))
+(define @@fixnum->bignum (lambda (x) (bignum (fx< x 0) (bytes (fxabs x)))))
 
 ; agnostic implementation
 (define (@@flonum->exact x)
@@ -109,6 +127,16 @@
 (@@define-macro (macro-exact-int? obj) ;; obj can be any object
   `(or (@@fixnum? ,obj)
        (@@bignum? ,obj)))
+
+(@@define-macro (macro-cpxnum-are-possibly-real?) #f)
+
+(@@define-macro (macro-cpxnum-real? obj) ;; obj must be a cpxnum
+  `(and (macro-cpxnum-are-possibly-real?)
+        (let ((imag (macro-cpxnum-imag ,obj)))
+          (and (@@flonum? imag)
+               (@@flzero? imag)))))
+
+(@@define-macro (macro-special-case-exact-zero?) #t)
 
 (define-syntax macro-number-dispatch
   (lambda (stx)
