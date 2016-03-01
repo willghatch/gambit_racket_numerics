@@ -1,13 +1,9 @@
 #lang racket
-(require "_num_.rkt")
+(require "_num.rkt"
+         "_num_.rkt"
+         "bignum.rkt"
+         "constants.rkt")
 (provide to-rktnum from-rktnum)
-
-(define (bignum->rktnum x)
-  (define magnitude
-    (for/sum ((digit (in-bytes (bignum-digits x)))
-              (i (in-naturals)))
-      (* digit (expt 256 i))))
-  `(if (bignum-negative x) (- magnitude) magnitude))
 
 (define (to-rktnum x)
   (cond ((fixnum? x) x)
@@ -18,25 +14,36 @@
                                        (to-rktnum (cpxnum-imag x))))
         (else x)))
 
-(define (rktnum->bignum x)
-  (define magnitude (abs x))
-  (define digits
-    (for/list ((_ (in-naturals)) #:break (zero? magnitude))
-      (define digit (modulo magnitude 256))
-      (set! magnitude (quotient magnitude 256))
-      digit))
-  (bignum (negative? x) (apply bytes digits)))
-
 (define (from-rktnum x)
   (if (number? x)
       (if (real? x)
           (if (exact? x)
               (if (integer? x)
-                  (if (and (>= x -128) (< x 128)) x
-                      (rktnum->bignum x))
+                  (if (or (> x max-fixnum) (< x min-fixnum))
+                      (rktnum->bignum x)
+                      x)
+                  (rktnum->bignum x)
                   (ratnum (from-rktnum (numerator x))
                           (from-rktnum (denominator x))))
               x)
           (cpxnum (from-rktnum (real-part x))
                   (from-rktnum (imag-part x))))
       x))
+
+(define (rktnum->bignum x)
+  (define adigit-modulus (expt 2 @@bignum.adigit-width))
+  (define magnitude (abs x))
+  (define adigits
+    (for/vector ((_ (in-naturals)) #:break (zero? magnitude))
+      (define adigit (modulo magnitude adigit-modulus))
+      (set! magnitude (quotient magnitude adigit-modulus))
+      adigit))
+  (if (negative? x) (@@bignum.- (@@fixnum->bignum 0) (bignum adigits)) (bignum adigits)))
+
+(define (bignum->rktnum x)
+  (define adigit-modulus (expt 2 @@bignum.adigit-width))
+  (if (@@bignum.negative? x)
+      (- (bignum->rktnum (@@bignum.- (@@fixnum->bignum 0) x)))
+      (for/sum ((adigit (in-vector (adigits x)))
+                (i (in-naturals)))
+        (* adigit (expt adigit-modulus i)))))
