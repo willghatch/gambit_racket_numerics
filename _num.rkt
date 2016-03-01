@@ -154,7 +154,7 @@
 
 ;;; Exactness predicates.
 
-#;(define-prim (@@exact? x)
+(define-prim (@@exact? x)
 
   (define (type-error) #f)
 
@@ -400,7 +400,7 @@
 
 ;;; Numerical property predicates.
 
-#;(define-prim (@@zero? x)
+(define-prim (@@zero? x)
 
   (define (type-error)
     (@@fail-check-number 1 zero? x))
@@ -421,7 +421,7 @@
   (macro-force-vars (x)
     (@@zero? x)))
 
-#;(define-prim (@@positive? x)
+(define-prim (@@positive? x)
 
   (define (type-error)
     (@@fail-check-real 1 positive? x))
@@ -439,7 +439,7 @@
   (macro-force-vars (x)
     (@@positive? x)))
 
-#;(define-prim (@@negative? x)
+(define-prim (@@negative? x)
 
   (define (type-error)
     (@@fail-check-real 1 negative? x))
@@ -457,7 +457,7 @@
   (macro-force-vars (x)
     (@@negative? x)))
 
-#;(define-prim (@@odd? x)
+(define-prim (@@odd? x)
 
   (define (type-error)
     (@@fail-check-integer 1 odd? x))
@@ -497,7 +497,7 @@
   (macro-force-vars (x)
     (@@even? x)))
 
-#;(define-prim (@@finite? x)
+(define-prim (@@finite? x)
 
   (define (type-error)
     (@@fail-check-real 1 finite? x))
@@ -513,7 +513,7 @@
               (@@flfinite? real)))
         (type-error))))
 
-#;(define-prim (finite? x)
+(define-prim (finite? x)
   (macro-force-vars (x)
     (@@finite? x)))
 
@@ -561,7 +561,7 @@
 
 ;;; Max and min.
 
-#;(define-prim (@@max x y)
+(define-prim (@@max x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -689,7 +689,7 @@
 
 ;;; +, *, -, /
 
-#;(define-prim (@@+ x y)
+(define-prim (@@+ x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -901,7 +901,7 @@
     (@@make-rectangular (@@negate (macro-cpxnum-real x))
                         (@@negate (macro-cpxnum-imag x)))))
 
-#;(define-prim (@@- x y)
+(define-prim (@@- x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -996,7 +996,7 @@
     (@@fl/ (macro-inexact-+1) x)
     (@@cpxnum./ (@@noncpxnum->cpxnum 1) x)))
 
-#;(define-prim (@@/ x y)
+(define-prim (@@/ x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -1098,12 +1098,12 @@
 
 ;;; abs
 
-#;(define-prim (@@exact-int.negative? x)
+(define-prim (@@exact-int.negative? x)
   (if (@@fixnum? x)
       (@@fxnegative? x)
       (@@bignum.negative? x)))
 
-#;(define-prim (@@abs x)
+(define-prim (@@abs x)
 
   (define (type-error)
     (@@fail-check-real 1 abs x))
@@ -1129,7 +1129,7 @@
 
 ;;; quotient, remainder, modulo
 
-#;(define-prim (@@quotient x y)
+(define-prim (@@quotient x y)
 
   (define (type-error-on-x)
     (@@fail-check-integer 1 quotient x y))
@@ -1312,7 +1312,7 @@
   (macro-force-vars (x y)
     (@@remainder x y)))
 
-#;(define-prim (@@modulo x y)
+(define-prim (@@modulo x y)
 
   (define (type-error-on-x)
     (@@fail-check-integer 1 modulo x y))
@@ -1850,7 +1850,7 @@
 
 ;;; numerator, denominator
 
-#;(define-prim (@@numerator x)
+(define-prim (@@numerator x)
 
   (define (type-error)
     (@@fail-check-rational 1 numerator x))
@@ -1873,7 +1873,7 @@
   (macro-force-vars (x)
     (@@numerator x)))
 
-#;(define-prim (@@denominator x)
+(define-prim (@@denominator x)
 
   (define (type-error)
     (@@fail-check-rational 1 denominator x))
@@ -2159,7 +2159,7 @@ for a discussion of branch cuts.
             (else
              (macro-cpxnum-make x y))))))
 
-#;(define-prim (@@cssqs x+iy)
+(define-prim (@@cssqs x+iy)
   (let ((x (macro-cpxnum-real x+iy))
         (y (macro-cpxnum-imag x+iy)))
     (cond ((or (@@flinfinite? x)
@@ -2184,7 +2184,7 @@ for a discussion of branch cuts.
                            k))
                  (@@cons rho 0)))))))
 
-#;(define-prim (@@csqrt x+iy)
+(define-prim (@@csqrt x+iy)
   (let* ((x (macro-cpxnum-real x+iy))
          (y (macro-cpxnum-imag x+iy))
          (rho+ik (@@cssqs x+iy))
@@ -2325,7 +2325,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@conjugate x)))
 
-#;(define-prim (@@exp x)
+(define-prim (@@exp x)
 
   (define (type-error)
     (@@fail-check-number 1 exp x))
@@ -2344,12 +2344,12 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@exp x)))
 
-#;(define-prim (@@flonum-full-precision? x)
+(define-prim (@@flonum-full-precision? x)
   (let ((y (@@flabs x)))
     (and (@@fl< y (macro-inexact-+inf))
          (@@fl<= (macro-flonum-min-normal) y))))
 
-#;(define-prim (@@log x)
+(define-prim (@@log x)
 
   (define (type-error)
     (@@fail-check-number 1 log x))
@@ -2477,7 +2477,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@log x)))
 
-#;(define-prim (@@sin x)
+(define-prim (@@sin x)
 
   (define (type-error)
     (@@fail-check-number 1 sin x))
@@ -2503,7 +2503,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@sin x)))
 
-#;(define-prim (@@cos x)
+(define-prim (@@cos x)
 
   (define (type-error)
     (@@fail-check-number 1 cos x))
@@ -2619,7 +2619,7 @@ for a discussion of branch cuts.
           (range-error)
           (@@* -i (@@atanh (@@* +i x)))))))
 
-#;(define-prim (@@atan2 y x)
+(define-prim (@@atan2 y x)
   (cond ((or (and (@@flonum? x) (@@flnan? x))
              (and (@@flonum? y) (@@flnan? y)))
          +nan.0)
@@ -2672,7 +2672,7 @@ for a discussion of branch cuts.
 
 ;;; Hyperbolic functions
 
-#;(define-prim (@@sinh x)
+(define-prim (@@sinh x)
 
   (define (type-error)
     (@@fail-check-number 1 sinh x))
@@ -2697,7 +2697,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@sinh x)))
 
-#;(define-prim (@@cosh x)
+(define-prim (@@cosh x)
 
   (define (type-error)
     (@@fail-check-number 1 cosh x))
@@ -2825,7 +2825,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@atanh x)))
 
-#;(define-prim (@@sqrt x)
+(define-prim (@@sqrt x)
 
   (define (type-error)
     (@@fail-check-number 1 sqrt x))
@@ -3210,7 +3210,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x y)
     (@@make-rectangular x y)))
 
-#;(define-prim (@@make-polar x y)
+(define-prim (@@make-polar x y)
   (cond ((@@not (@@real? x))
          (@@fail-check-real 1 make-polar x y))
         ((@@not (@@real? y))
@@ -3237,7 +3237,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@real-part x)))
 
-#;(define-prim (@@imag-part x)
+(define-prim (@@imag-part x)
 
   (define (type-error)
     (@@fail-check-number 1 imag-part x))
@@ -3282,7 +3282,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@magnitude x)))
 
-#;(define-prim (@@angle x)
+(define-prim (@@angle x)
 
   (define (type-error)
     (@@fail-check-number 1 angle x))
@@ -3310,7 +3310,7 @@ for a discussion of branch cuts.
 
 ;;; exact->inexact, inexact->exact
 
-#;(define-prim (@@exact->inexact x)
+(define-prim (@@exact->inexact x)
 
   (define (type-error)
     (@@fail-check-number 1 exact->inexact x))
@@ -4769,7 +4769,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@bit-count x)))
 
-#;(define-prim (@@integer-length x)
+(define-prim (@@integer-length x)
 
   (define (type-error)
     (@@fail-check-exact-integer 1 integer-length x))
@@ -5804,7 +5804,7 @@ ___RESULT = result;
 
 ;;; Bignum addition and subtraction.
 
-#;(define-prim (@@bignum.+ x y)
+(define-prim (@@bignum.+ x y)
 
   ;; x is an unnormalized bignum, y is an unnormalized bignum
 
@@ -9048,7 +9048,7 @@ ___RESULT = result;
                        (possibly-unnormalized-bignum-arithmetic-shift y (@@fx- y-low-bits)))
                   (@@fx+ x-low-bits y-low-bits))))))))
 
-#;(define-prim (@@bignum.arithmetic-shift x shift)
+(define-prim (@@bignum.arithmetic-shift x shift)
   (let* ((bit-shift
           (@@fxmodulo shift @@bignum.adigit-width))
          (digit-shift
@@ -9519,7 +9519,7 @@ ___RESULT = result;
       (@@ratnum.normalize x (@@arithmetic-shift 1 (@@fx- y)))
       (@@arithmetic-shift x y)))
 
-#;(define-prim (@@exact-int.div x y  (need-quotient? #t) (keep-dividend? #t))
+(define-prim (@@exact-int.div x y  (need-quotient? #t) (keep-dividend? #t))
 
   (define (big-quotient x y)
     (let* ((x-negative? (@@negative? x))
@@ -9574,7 +9574,7 @@ ___RESULT = result;
         (else
          (big-quotient x y))))
 
-#;(define-prim (@@exact-int.nth-root x y)
+(define-prim (@@exact-int.nth-root x y)
   (cond ((@@eqv? x 0)
          0)
         ((@@eqv? x 1)
@@ -9664,7 +9664,7 @@ ___RESULT = result;
   (macro-force-vars (x y)
     (@@integer-nth-root x y)))
 
-#;(define-prim (@@exact-int.sqrt x)
+(define-prim (@@exact-int.sqrt x)
 
   ;; Derived from the paper "Karatsuba Square Root" by Paul Zimmermann,
   ;; INRIA technical report RR-3805, 1999.  (Used in gmp 4.*)
@@ -9769,7 +9769,7 @@ ___RESULT = result;
        (@@* (macro-ratnum-denominator x)
             (macro-ratnum-numerator y))))
 
-#;(define-prim (@@ratnum.+ x y)
+(define-prim (@@ratnum.+ x y)
   (let ((p (macro-ratnum-numerator x))
         (q (macro-ratnum-denominator x))
         (r (macro-ratnum-numerator y))
@@ -9790,7 +9790,7 @@ ___RESULT = result;
                 num
                 (macro-ratnum-make num den)))))))
 
-#;(define-prim (@@ratnum.- x y)
+(define-prim (@@ratnum.- x y)
   (let ((p (macro-ratnum-numerator x))
         (q (macro-ratnum-denominator x))
         (r (macro-ratnum-numerator y))
@@ -9826,7 +9826,7 @@ ___RESULT = result;
               num
               (macro-ratnum-make num den))))))
 
-#;(define-prim (@@ratnum./ x y)
+(define-prim (@@ratnum./ x y)
   (let ((p (macro-ratnum-numerator x))
         (q (macro-ratnum-denominator x))
         (r (macro-ratnum-denominator y))
@@ -9845,7 +9845,7 @@ ___RESULT = result;
                   num
                   (macro-ratnum-make num den)))))))
 
-#;(define-prim (@@ratnum.normalize num den)
+(define-prim (@@ratnum.normalize num den)
   (let* ((x (@@gcd num den))
          (y (if (@@negative? den) (@@negate x) x))
          (num (@@quotient num y))
@@ -10501,7 +10501,7 @@ ___RESULT = result;
   (and (@@= (macro-cpxnum-real x) (macro-cpxnum-real y))
        (@@= (macro-cpxnum-imag x) (macro-cpxnum-imag y))))
 
-#;(define-prim (@@cpxnum.+ x y)
+(define-prim (@@cpxnum.+ x y)
   (let ((a (macro-cpxnum-real x)) (b (macro-cpxnum-imag x))
         (c (macro-cpxnum-real y)) (d (macro-cpxnum-imag y)))
     (@@make-rectangular (@@+ a c) (@@+ b d))))
@@ -10511,12 +10511,12 @@ ___RESULT = result;
         (c (macro-cpxnum-real y)) (d (macro-cpxnum-imag y)))
     (@@make-rectangular (@@- (@@* a c) (@@* b d)) (@@+ (@@* a d) (@@* b c)))))
 
-#;(define-prim (@@cpxnum.- x y)
+(define-prim (@@cpxnum.- x y)
   (let ((a (macro-cpxnum-real x)) (b (macro-cpxnum-imag x))
         (c (macro-cpxnum-real y)) (d (macro-cpxnum-imag y)))
     (@@make-rectangular (@@- a c) (@@- b d))))
 
-#;(define-prim (@@cpxnum./ x y)
+(define-prim (@@cpxnum./ x y)
 
   (define (basic/ a b c d q)
     (@@make-rectangular (@@/ (@@+ (@@* a c) (@@* b d)) q)

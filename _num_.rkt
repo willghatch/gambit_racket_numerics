@@ -8,6 +8,8 @@
 
 (define-syntax-rule (@@define-macro args ...) (define-macro args ...))
 (define-syntax-rule (@@declare args ...) (void))
+(define-syntax-rule (declare args ...) (void))
+
 
 (define-syntax define-prim
   (lambda (stx)
@@ -36,31 +38,68 @@
 (define-syntax-rule (macro-cpxnum-imag x) (cpxnum-imag x))
 (define-syntax-rule (macro-cpxnum-make r i) (cpxnum r i))
 
+(define @@cons cons)
+(define @@car car)
+(define @@cdr cdr)
 (define @@eqv? eqv?)
 (define @@not not)
 (define @@fixnum? fixnum?)
 (define @@fx= fx=)
 (define @@fx< fx<)
+(define @@fx<= fx<=)
 (define @@fx-? (case-lambda ((x) (fixnum-fail (fixnum-bounds (fx- 0 x))))
                             ((l r) (fixnum-fail (fixnum-bounds (fx- l r))))))
 (define @@fx+ fx+)
 (define @@fx+? (lambda (x y) (fixnum-fail (fixnum-bounds (fx+ x y)))))
 (define @@fxzero? (lambda (x) (fx= x 0)))
 (define @@fxnegative? (lambda (x) (fx< x 0)))
+(define @@fxpositive? (lambda (x) (fx> x 0)))
 (define @@fxodd? (lambda (x) (not (zero? (fxmodulo x 2)))))
 (define @@fx*? (lambda (x y) (fixnum-fail (fx* x y))))
 (define @@fx* fx*)
+(define @@fxquotient fxquotient)
+(define @@fxmodulo fxmodulo)
+(define @@fxmax fxmax)
+(define @@fxlength
+  (lambda (x)
+    (if (fx< x 0)
+        (@@fxlength (fx- -1 x))
+        (let loop ((x x) (counter 0))
+          (if (zero? x) (counter)
+              (loop (fxrshift x 1) (fx+ counter 1)))))))
 (define @@fxarithmetic-shift-left fxlshift)
+(define @@fxarithmetic-shift-left? (lambda (x y) (fixnum-fail (fixnum-bounds (fxlshift x y)))))
+(define @@fxarithmetic-shift-right fxrshift)
+(define @@fxand fxand)
 (define @@flonum? flonum?)
 (define @@fixnum->flonum-exact? (lambda (x) (fx= (fl->fx (fx->fl x)) x)))
 (define @@fl= fl=)
 (define @@fl< fl<)
 (define @@fl* fl*)
 (define @@fl/ fl/)
+(define @@fl+ fl+)
+(define @@flcos flcos)
+(define @@flcosh (lambda (x) (fl/ (fl+ (exp x) (exp (fl- 0.0 x))) 2.0)))
+(define @@flsin flsin)
+(define @@flsinh (lambda (x) (fl/ (fl- (exp x) (exp (fl- 0.0 x))) 2.0)))
+(define @@flmax flmax)
+(define @@flatan flatan)
+(define @@flexp flexp)
+(define @@flexpt flexpt)
+(define @@fllog fllog)
+(define @@fllog1p (lambda (x) (fllog (+ x 1))))
+(define @@flilogb (lambda (x) (fltruncate (fl/ (fllog x) (fllog 2.0))))) ; unsure
+(define @@flscalbn (lambda (x y) (fl* x (flexpt 2.0 y)))) ; unsure
+(define @@flabs flabs)
+(define @@flsqrt flsqrt)
+(define @@flsquare (lambda (x) (* x x)))
+(define @@flcopysign (lambda (x y) (fl* (flabs x) (fl/ y (flabs y)))))
+(define @@fl<= fl<=)
 (define @@fl- (case-lambda ((x) (fl- 0.0 x))
                            ((l r) (fl- l r))))
 (define @@fixnum->flonum fx->fl)
 (define @@flnan? (lambda (x) (not (fl= x x))))
+(define @@flinfinite? (lambda (x) (or (fl= +inf.0 x) (fl= -inf.0 x))))
 (define @@flfinite? (lambda (x) (not (or (@@flnan? x) (fl= +inf.0 x) (fl= -inf.0 x)))))
 (define @@flpositive? (lambda (x) (fl< 0.0 x)))
 (define @@flnegative? (lambda (x) (fl> 0.0 x)))
@@ -74,9 +113,20 @@
                ((l r) (fx- l r))))
 (define @@max-fixnum max-fixnum)
 (define @@min-fixnum min-fixnum)
+(define @@fixnum-width 30)
+(define @@make-f64vector make-flvector)
+(define @@f64vector-set! flvector-set!)
+(define @@f64vector-ref flvector-ref)
+(define @@f64vector flvector)
 
 (define-prim (@@raise-type-exception arg-num type-id proc args)
   (raise type-id))
+(define-prim (@@raise-range-exception arg-num proc args ...)
+  (raise 'range))
+(define-prim (@@raise-divide-by-zero-exception arg-num proc args ...)
+  (raise 'divide-by-zero))
+(define-prim (@@raise-heap-overflow-exception arg-num proc args ...)
+  (raise 'heap-overflow))
 
 ; agnostic implementation
 (define (@@flonum->exact x)
@@ -152,6 +202,8 @@
 (define-fail-check-type real 'real)
 (define-fail-check-type number 'number)
 (define-fail-check-type integer 'integer)
+(define-fail-check-type exact-integer 'exact-integer)
+(define-fail-check-type rational 'rational)
 
 (@@define-macro (macro-exact-int? obj) ;; obj can be any object
   `(or (@@fixnum? ,obj)
@@ -204,6 +256,64 @@
 (@@define-macro (macro-cpxnum--i)     -i)
 (@@define-macro (macro-cpxnum-+i)     +i)
 
+(@@define-macro (macro-cpxnum-+1/2+sqrt3/2i)
+  (make-rectangular 1/2 (/ (sqrt 3) 2)))
+
+(@@define-macro (macro-cpxnum-+1/2-sqrt3/2i)
+  (make-rectangular 1/2 (- (/ (sqrt 3) 2))))
+
+(@@define-macro (macro-cpxnum--1/2+sqrt3/2i)
+  (make-rectangular -1/2 (/ (sqrt 3) 2)))
+
+(@@define-macro (macro-cpxnum--1/2-sqrt3/2i)
+  (make-rectangular -1/2 (- (/ (sqrt 3) 2))))
+
+(@@define-macro (macro-cpxnum-+sqrt3/2+1/2i)
+  (make-rectangular (/ (sqrt 3) 2) 1/2))
+
+(@@define-macro (macro-cpxnum-+sqrt3/2-1/2i)
+  (make-rectangular (/ (sqrt 3) 2) -1/2))
+
+(@@define-macro (macro-cpxnum--sqrt3/2+1/2i)
+  (make-rectangular (- (/ (sqrt 3) 2)) 1/2))
+
+(@@define-macro (macro-cpxnum--sqrt3/2-1/2i)
+  (make-rectangular (- (/ (sqrt 3) 2)) -1/2))
+
+(@@define-macro (macro-flonum-min-normal) ;; (expt 2.0 (+ (macro-flonum-m-bits) (macro-flonum-e-min)))
+  (expt 2.0 (+ 52 -1074)))
+
+(@@define-macro (macro-flonum-rational? obj) ;; obj must be a flonum
+  `(@@flfinite? ,obj))
+
+(@@define-macro (macro-cpxnum-rational? obj) ;; obj must be a cpxnum
+  `(and (macro-cpxnum-are-possibly-real?)
+        (let ((imag (macro-cpxnum-imag ,obj)))
+          (and (@@flonum? imag)
+               (@@flzero? imag)
+               (let ((real (macro-cpxnum-real ,obj)))
+                 (macro-noncpxnum-rational? real))))))
+
+(@@define-macro (macro-noncpxnum-rational? obj) ;; obj must be in fixnum/bignum/ratnum/flonum
+  `(or (@@not (@@flonum? ,obj))
+       (macro-flonum-rational? ,obj)))
+
+(@@define-macro (macro-inexact-log-2)    (log 2))
+(@@define-macro (macro-inexact-exp-+1/2) (exp +1/2))
+(@@define-macro (macro-inexact-exp--1/2) (exp -1/2))
+
+(@@define-macro (macro-flonum-+m-max-plus-1) ;; (expt 2 (macro-flonum-m-bits-plus-1))
+  9007199254740992)
+(@@define-macro (macro-flonum-inverse-+m-max-plus-1-inexact);; (/ (macro-flonum-+m-max-plus-1-inexact))
+  (/ 9007199254740992.0))
+(@@define-macro (macro-flonum-m-bits-plus-1*2)
+  106)
+
+(@@define-macro (macro-inexact-epsilon) 1.1102230246251565e-16)     ; (- 1 epsilon) <> 1, epsilon smallest
+(@@define-macro (macro-inexact-lambda)  2.2250738585072014e-308)    ; smallest positive flonum
+(@@define-macro (macro-inexact-omega)   1.7976931348623157e308)     ; largest finite flonum
+
+
 (define-syntax macro-number-dispatch
   (lambda (stx)
     (syntax-case stx ()
@@ -214,3 +324,26 @@
                ((@@ratnum? num) rat)
                ((@@cpxnum? num) cpx)
                (else            err))))))
+
+(begin-for-syntax
+  (define @@compilation-options '()))
+
+(define-syntax macro-force-vars
+  (lambda (stx)
+    (syntax-case stx ()
+      ((_ vars expr)
+       (if ((if (and (pair? @@compilation-options)
+                     (pair? (car @@compilation-options)))
+                assq
+                memq)
+            'force
+            @@compilation-options)
+
+           (syntax-case (datum->syntax
+                         #'vars
+                         (map (lambda (x) `(,x (@@force ,x)))
+                              (syntax->list #'vars)))
+               ()
+             (bindings #'(let bindings expr)))
+
+           #'expr)))))
