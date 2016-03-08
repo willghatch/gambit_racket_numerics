@@ -1,5 +1,6 @@
 #lang racket
-(require "_num_.rkt")
+(require "_num_.rkt"
+         "translate.rkt")
 (provide @@= @@<)
 ;;;============================================================================
 
@@ -138,7 +139,7 @@
   (macro-force-vars (x)
     (@@rational? x)))
 
-#;(define-prim (@@integer? x)
+(define-prim (@@integer? x)
   (macro-number-dispatch x #f
     #t ;; x = fixnum
     #t ;; x = bignum
@@ -181,7 +182,7 @@
         (and (@@not (@@flonum? (macro-cpxnum-real x))) ;; x = cpxnum
              (@@not (@@flonum? (macro-cpxnum-imag x))))))))
 
-#;(define-prim (@@inexact? x)
+(define-prim (@@inexact? x)
 
   (define (type-error) #f)
 
@@ -1312,7 +1313,7 @@
   (macro-force-vars (x y)
     (@@remainder x y)))
 
-(define-prim (@@modulo x y)
+#;(define-prim (@@modulo x y)
 
   (define (type-error-on-x)
     (@@fail-check-integer 1 modulo x y))
@@ -1414,7 +1415,7 @@
 
 ;;; gcd, lcm
 
-#;(define-prim (@@gcd x y)
+(define-prim (@@gcd x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -1897,10 +1898,10 @@
 
 ;;; floor, ceiling, truncate, round
 
-#;(define-prim (@@floor x)
+(define-prim (@@floor x)
 
   (define (type-error)
-    (@@fail-check-finite-real 1 floor x))
+    (@@fail-check-finite-real 1 @@floor x))
 
   (macro-number-dispatch x (type-error)
     x
@@ -2349,13 +2350,13 @@ for a discussion of branch cuts.
     (and (@@fl< y (macro-inexact-+inf))
          (@@fl<= (macro-flonum-min-normal) y))))
 
-(define-prim (@@log x)
+#;(define-prim (@@log x)
 
   (define (type-error)
-    (@@fail-check-number 1 log x))
+    (@@fail-check-number 1 @@log x))
 
   (define (range-error)
-    (@@raise-range-exception 1 log x))
+    (@@raise-range-exception 1 @@log x))
 
   (define (negative-log x)
     (@@make-rectangular (@@log (@@negate x)) (macro-inexact-+pi)))
@@ -2619,7 +2620,7 @@ for a discussion of branch cuts.
           (range-error)
           (@@* -i (@@atanh (@@* +i x)))))))
 
-(define-prim (@@atan2 y x)
+#;(define-prim (@@atan2 y x)
   (cond ((or (and (@@flonum? x) (@@flnan? x))
              (and (@@flonum? y) (@@flnan? y)))
          +nan.0)
@@ -2825,7 +2826,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@atanh x)))
 
-(define-prim (@@sqrt x)
+#;(define-prim (@@sqrt x)
 
   (define (type-error)
     (@@fail-check-number 1 sqrt x))
@@ -2941,6 +2942,8 @@ for a discussion of branch cuts.
     (@@sqrt x)))
 
 (define-prim (@@expt x y)
+  (from-rktnum (expt (to-rktnum x) (to-rktnum y))))
+#;(define-prim (@@expt x y)
 
   (define (exact-int-expt x y)
 
@@ -3282,7 +3285,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@magnitude x)))
 
-(define-prim (@@angle x)
+#;(define-prim (@@angle x)
 
   (define (type-error)
     (@@fail-check-number 1 angle x))
@@ -4687,10 +4690,10 @@ for a discussion of branch cuts.
 (define-prim (@@arithmetic-shift x y)
 
   (define (type-error-on-x)
-    (@@fail-check-exact-integer 1 arithmetic-shift x y))
+    (@@fail-check-exact-integer 1 @@arithmetic-shift x y))
 
   (define (type-error-on-y)
-    (@@fail-check-exact-integer 2 arithmetic-shift x y))
+    (@@fail-check-exact-integer 2 @@arithmetic-shift x y))
 
   (define (overflow)
     (@@raise-heap-overflow-exception)
@@ -4772,7 +4775,7 @@ for a discussion of branch cuts.
 (define-prim (@@integer-length x)
 
   (define (type-error)
-    (@@fail-check-exact-integer 1 integer-length x))
+    (@@fail-check-exact-integer 1 @@integer-length x))
 
   (cond ((@@fixnum? x)
          (@@fxlength x))
@@ -4815,16 +4818,16 @@ for a discussion of branch cuts.
           (else
            (@@bitwise-merge x y z)))))
 
-#;(define-prim (@@bit-set? x y)
+(define-prim (@@bit-set? x y)
 
   (define (type-error-on-x)
-    (@@fail-check-exact-integer 1 bit-set? x y))
+    (@@fail-check-exact-integer 1 @@bit-set? x y))
 
   (define (type-error-on-y)
-    (@@fail-check-exact-integer 2 bit-set? x y))
+    (@@fail-check-exact-integer 2 @@bit-set? x y))
 
   (define (range-error)
-    (@@raise-range-exception 1 bit-set? x y))
+    (@@raise-range-exception 1 @@bit-set? x y))
 
   (cond ((@@fixnum? x)
          (cond ((@@fixnum? y)
@@ -4887,10 +4890,10 @@ for a discussion of branch cuts.
           (else
            (@@all-bits-set? x y)))))
 
-#;(define-prim (@@first-bit-set x)
+(define-prim (@@first-bit-set x)
 
   (define (type-error)
-    (@@fail-check-exact-integer 1 first-bit-set x))
+    (@@fail-check-exact-integer 1 @@first-bit-set x))
 
   (cond ((@@fixnum? x)
          (@@fxfirst-bit-set x))
@@ -4910,7 +4913,7 @@ for a discussion of branch cuts.
   (macro-force-vars (x)
     (@@first-bit-set x)))
 
-#;(define-prim (@@extract-bit-field size position n)
+(define-prim (@@extract-bit-field size position n)
 
   ;; I've decided to be brutally simple and not optimize
   ;; for special cases, fixnums, etc.
@@ -5601,8 +5604,8 @@ for a discussion of branch cuts.
 
 ;;(define @@bignum.adigit-ones #xffffffffffffffff)
 ;;(define @@bignum.adigit-zeros #x10000000000000000)
-#;(define @@bignum.adigit-ones (@@fixnum->bignum -1))
-#;(define @@bignum.adigit-zeros (@@fixnum->bignum 0))
+(define @@bignum.adigit-ones (@@fixnum->bignum -1))
+(define @@bignum.adigit-zeros (@@fixnum->bignum 0))
 
 #;(macro-case-target
  ((C)
@@ -5612,7 +5615,7 @@ for a discussion of branch cuts.
 (define @@bignum.mdigit-base
   (@@fxarithmetic-shift-left 1 @@bignum.mdigit-width))
 
-#;(define @@bignum.inexact-mdigit-base
+(define @@bignum.inexact-mdigit-base
   (@@fixnum->flonum @@bignum.mdigit-base))
 
 (define @@bignum.mdigit-base-minus-1
@@ -5638,8 +5641,8 @@ for a discussion of branch cuts.
 #;(define @@bignum.naive-mul-max-width 1400)
 #;(set! @@bignum.naive-mul-max-width @@bignum.naive-mul-max-width)
 
-#;(define @@bignum.fft-mul-min-width 20000)
-#;(set! @@bignum.fft-mul-min-width @@bignum.fft-mul-min-width)
+(define @@bignum.fft-mul-min-width 20000)
+(set! @@bignum.fft-mul-min-width @@bignum.fft-mul-min-width)
 
 #;(define @@bignum.fft-mul-max-width
   (if (@@fixnum? -1073741824) ;; to avoid creating f64vectors that are too long
@@ -5799,7 +5802,7 @@ ___RESULT = result;
           (@@bignum.make k x complement?))
         v)))
 
-#;(define-prim (@@bignum.copy x)
+(define-prim (@@bignum.copy x)
   (@@bignum.make (@@bignum.adigit-length x) x #f))
 
 ;;; Bignum addition and subtraction.
@@ -5978,8 +5981,25 @@ ___RESULT = result;
                result)))))
 
 ;;; Bignum multiplication.
-
+(define (rktnum->bignum x)
+  (define adigit-modulus (expt 2 @@bignum.adigit-width))
+  (define magnitude (abs x))
+  (define adigits
+    (for/vector ((_ (in-naturals)) #:break (zero? magnitude))
+      (define adigit (modulo magnitude adigit-modulus))
+      (set! magnitude (quotient magnitude adigit-modulus))
+      adigit))
+  (if (negative? x) (@@bignum.- (@@fixnum->bignum 0) (bignum adigits)) (bignum adigits)))
+(define (bignum->rktnum x)
+  (define adigit-modulus (expt 2 @@bignum.adigit-width))
+  (if (@@bignum.negative? x)
+      (- (bignum->rktnum (@@bignum.- (@@fixnum->bignum 0) x)))
+      (for/sum ((adigit (in-vector (adigits x)))
+                (i (in-naturals)))
+        (* adigit (expt adigit-modulus i)))))
 (define-prim (@@bignum.* x y)
+  (rktnum->bignum (* (bignum->rktnum x) (bignum->rktnum y))))
+#;(define-prim (@@bignum.* x y)
 
   (define (fft-mul x y)
 
@@ -9066,7 +9086,7 @@ ___RESULT = result;
           (else
            0))))
 
-#;(define-prim (@@bignum.arithmetic-shift-into! x shift result)
+(define-prim (@@bignum.arithmetic-shift-into! x shift result)
 
   #|
   Shifts x by shift bits into result.
@@ -9148,19 +9168,19 @@ ___RESULT = result;
 
 ;;; Bignum division.
 
-#;(define @@reciprocal-cache (@@make-table 0 #f #t #f @@eq?))
+(define @@reciprocal-cache (@@make-table 0 #f #t #f @@eq?))
 
-#;(define @@bignum.mdigit-width/2
+(define @@bignum.mdigit-width/2
   (@@fxquotient @@bignum.mdigit-width 2))
 
-#;(define @@bignum.mdigit-base*16
+(define @@bignum.mdigit-base*16
   (@@fx* @@bignum.mdigit-base 16))
 
-#;(define (@@fxceiling-ratio a b)
+(define (@@fxceiling-ratio a b)
   ;; computes (ceiling (/ a b)) with a b fixnums
   (@@fxquotient (@@fx+ a b -1) b))
 
-#;(define-prim (@@bignum.div u v  (need-quotient? #t) (keep-dividend? #t))
+(define-prim (@@bignum.div u v  (need-quotient? #t) (keep-dividend? #t))
 
   ;; u is an unnormalized bignum, v is a normalized exact-int
   ;; 0 < v <= u
@@ -9574,7 +9594,7 @@ ___RESULT = result;
         (else
          (big-quotient x y))))
 
-(define-prim (@@exact-int.nth-root x y)
+#;(define-prim (@@exact-int.nth-root x y)
   (cond ((@@eqv? x 0)
          0)
         ((@@eqv? x 1)
@@ -9664,7 +9684,7 @@ ___RESULT = result;
   (macro-force-vars (x y)
     (@@integer-nth-root x y)))
 
-(define-prim (@@exact-int.sqrt x)
+#;(define-prim (@@exact-int.sqrt x)
 
   ;; Derived from the paper "Karatsuba Square Root" by Paul Zimmermann,
   ;; INRIA technical report RR-3805, 1999.  (Used in gmp 4.*)
@@ -9740,7 +9760,7 @@ ___RESULT = result;
   (macro-force-vars (x)
     (@@integer-sqrt x)))
 
-#;(define-prim (@@exact-int.square n)
+(define-prim (@@exact-int.square n)
   (@@* n n))
 
 ;;;----------------------------------------------------------------------------
@@ -9857,7 +9877,7 @@ ___RESULT = result;
 (define-prim (@@exact-int->ratnum x)
   (macro-ratnum-make x 1))
 
-#;(define-prim (@@ratnum.round x  (round-half-away-from-zero? #f))
+(define-prim (@@ratnum.round x  (round-half-away-from-zero? #f))
   (let ((num (macro-ratnum-numerator x))
         (den (macro-ratnum-denominator x)))
     (if (@@eqv? den 2)
@@ -10360,7 +10380,7 @@ ___RESULT = result;
           (@@flcopysign (f1 (@@negate x)) (macro-inexact--1))
           (f1 x))))
 
-#;(define-prim (@@flonum-expt2 n)
+(define-prim (@@flonum-expt2 n)
   (cond ((@@fxzero? n)
          (macro-inexact-+1))
         ((@@fxnegative? n)

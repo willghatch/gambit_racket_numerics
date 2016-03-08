@@ -1,7 +1,5 @@
 #lang racket
-(require "_num.rkt"
-         "_num_.rkt"
-         "bignum.rkt"
+(require "_num_.rkt"
          "constants.rkt")
 (provide to-rktnum from-rktnum)
 
@@ -22,7 +20,6 @@
                   (if (or (> x max-fixnum) (< x min-fixnum))
                       (rktnum->bignum x)
                       x)
-                  (rktnum->bignum x)
                   (ratnum (from-rktnum (numerator x))
                           (from-rktnum (denominator x))))
               x)
@@ -38,12 +35,12 @@
       (define adigit (modulo magnitude adigit-modulus))
       (set! magnitude (quotient magnitude adigit-modulus))
       adigit))
-  (if (negative? x) (@@bignum.- (@@fixnum->bignum 0) (bignum adigits)) (bignum adigits)))
+  (if (negative? x) (bignum.- (@@fixnum->bignum 0) (bignum adigits)) (bignum adigits)))
 
 (define (bignum->rktnum x)
   (define adigit-modulus (expt 2 @@bignum.adigit-width))
   (if (@@bignum.negative? x)
-      (- (bignum->rktnum (@@bignum.- (@@fixnum->bignum 0) x)))
+      (- (bignum->rktnum (bignum.- (@@fixnum->bignum 0) x)))
       (for/sum ((adigit (in-vector (adigits x)))
                 (i (in-naturals)))
         (* adigit (expt adigit-modulus i)))))

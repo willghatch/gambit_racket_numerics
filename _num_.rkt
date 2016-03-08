@@ -4,12 +4,21 @@
          racket/flonum
          "bignum.rkt"
          "constants.rkt")
-(provide (all-defined-out) (all-from-out "bignum.rkt") flvector)
+(provide (all-defined-out)
+         (all-from-out "bignum.rkt")
+         flvector
+         (rename-out [-if if]))
 
 (define-syntax-rule (@@define-macro args ...) (define-macro args ...))
 (define-syntax-rule (@@declare args ...) (void))
 (define-syntax-rule (declare args ...) (void))
 
+(define-syntax (-if stx)
+  (syntax-case stx ()
+    ((_ test then else)
+     #'(if test then else))
+    ((_ test then)
+     #'(if test then (void)))))
 
 (define-syntax define-prim
   (lambda (stx)
@@ -38,15 +47,28 @@
 (define-syntax-rule (macro-cpxnum-imag x) (cpxnum-imag x))
 (define-syntax-rule (macro-cpxnum-make r i) (cpxnum r i))
 
-(define @@cons cons)
-(define @@car car)
-(define @@cdr cdr)
+(define (use-fast-bignum-algorithms) #f)
+(define (@@bignum.fast-gcd-size) (void))
+
+(define (@@make-table . args) (void))
+(define (@@table-ref . args) #f)
+(define (@@table-set! . args) (void))
+
+(define @@cons (lambda (x y) (vector x y)))
+(define @@car (lambda (x) (vector-ref x 0)))
+(define @@cdr (lambda (x) (vector-ref x 1)))
+(define @@set-car! (lambda (x y) (vector-set! x 0 y)))
+(define @@set-cdr! (lambda (x y) (vector-set! x 1 y)))
 (define @@eqv? eqv?)
 (define @@not not)
 (define @@fixnum? fixnum?)
+(define @@fxnot fxnot)
+(define @@fxfirst-bit-set (lambda (x) (fxand 1 (fxnot (fxand x 1)))))
 (define @@fx= fx=)
 (define @@fx< fx<)
 (define @@fx<= fx<=)
+(define @@fx> fx>)
+(define @@fx>= fx>=)
 (define @@fx-? (case-lambda ((x) (fixnum-fail (fixnum-bounds (fx- 0 x))))
                             ((l r) (fixnum-fail (fixnum-bounds (fx- l r))))))
 (define @@fx+ fx+)
@@ -55,11 +77,13 @@
 (define @@fxnegative? (lambda (x) (fx< x 0)))
 (define @@fxpositive? (lambda (x) (fx> x 0)))
 (define @@fxodd? (lambda (x) (not (zero? (fxmodulo x 2)))))
-(define @@fx*? (lambda (x y) (fixnum-fail (fx* x y))))
+(define @@fx*? (lambda (x y) (fixnum-fail (fixnum-bounds (fx* x y)))))
 (define @@fx* fx*)
 (define @@fxquotient fxquotient)
 (define @@fxmodulo fxmodulo)
+(define @@fxremainder fxremainder)
 (define @@fxmax fxmax)
+(define @@fxmin fxmin)
 (define @@fxlength
   (lambda (x)
     (if (fx< x 0)
@@ -72,6 +96,7 @@
 (define @@fxarithmetic-shift-right fxrshift)
 (define @@fxand fxand)
 (define @@flonum? flonum?)
+(define @@flonum->fixnum fl->fx)
 (define @@fixnum->flonum-exact? (lambda (x) (fx= (fl->fx (fx->fl x)) x)))
 (define @@fl= fl=)
 (define @@fl< fl<)
@@ -91,6 +116,7 @@
 (define @@flilogb (lambda (x) (fltruncate (fl/ (fllog x) (fllog 2.0))))) ; unsure
 (define @@flscalbn (lambda (x y) (fl* x (flexpt 2.0 y)))) ; unsure
 (define @@flabs flabs)
+(define @@flfloor flfloor)
 (define @@flsqrt flsqrt)
 (define @@flsquare (lambda (x) (* x x)))
 (define @@flcopysign (lambda (x y) (fl* (flabs x) (fl/ y (flabs y)))))
@@ -118,6 +144,8 @@
 (define @@f64vector-set! flvector-set!)
 (define @@f64vector-ref flvector-ref)
 (define @@f64vector flvector)
+(define @@vector vector)
+(define @@vector-ref vector-ref)
 
 (define-prim (@@raise-type-exception arg-num type-id proc args)
   (raise type-id))
@@ -204,6 +232,7 @@
 (define-fail-check-type integer 'integer)
 (define-fail-check-type exact-integer 'exact-integer)
 (define-fail-check-type rational 'rational)
+(define-fail-check-type finite-real 'finite-real)
 
 (@@define-macro (macro-exact-int? obj) ;; obj can be any object
   `(or (@@fixnum? ,obj)
@@ -280,9 +309,6 @@
 (@@define-macro (macro-cpxnum--sqrt3/2-1/2i)
   (make-rectangular (- (/ (sqrt 3) 2)) -1/2))
 
-(@@define-macro (macro-flonum-min-normal) ;; (expt 2.0 (+ (macro-flonum-m-bits) (macro-flonum-e-min)))
-  (expt 2.0 (+ 52 -1074)))
-
 (@@define-macro (macro-flonum-rational? obj) ;; obj must be a flonum
   `(@@flfinite? ,obj))
 
@@ -302,17 +328,78 @@
 (@@define-macro (macro-inexact-exp-+1/2) (exp +1/2))
 (@@define-macro (macro-inexact-exp--1/2) (exp -1/2))
 
-(@@define-macro (macro-flonum-+m-max-plus-1) ;; (expt 2 (macro-flonum-m-bits-plus-1))
-  9007199254740992)
-(@@define-macro (macro-flonum-inverse-+m-max-plus-1-inexact);; (/ (macro-flonum-+m-max-plus-1-inexact))
-  (/ 9007199254740992.0))
-(@@define-macro (macro-flonum-m-bits-plus-1*2)
-  106)
-
 (@@define-macro (macro-inexact-epsilon) 1.1102230246251565e-16)     ; (- 1 epsilon) <> 1, epsilon smallest
 (@@define-macro (macro-inexact-lambda)  2.2250738585072014e-308)    ; smallest positive flonum
 (@@define-macro (macro-inexact-omega)   1.7976931348623157e308)     ; largest finite flonum
 
+(@@define-macro (macro-flonum-m-bits)
+  52)
+
+(@@define-macro (macro-flonum-m-bits-plus-1)
+  53)
+
+(@@define-macro (macro-flonum-m-bits-plus-1*2)
+  106)
+
+(@@define-macro (macro-flonum-e-bits)
+  11)
+
+(@@define-macro (macro-flonum-sign-bit) ;; (expt 2 (+ (macro-flonum-e-bits) (macro-flonum-m-bits)))
+  #x8000000000000000)
+
+(@@define-macro (macro-flonum-m-min) ;; (expt 2.0 (macro-flonum-m-bits))
+  4503599627370496.0)
+
+(@@define-macro (macro-flonum-+m-min) ;; (expt 2 (macro-flonum-m-bits))
+  4503599627370496)
+
+(@@define-macro (macro-flonum-+m-max-plus-1) ;; (expt 2 (macro-flonum-m-bits-plus-1))
+  9007199254740992)
+
+(@@define-macro (macro-flonum-+m-max) ;; (- (macro-flonum-+m-max-plus-1) 1)
+  9007199254740991)
+
+(@@define-macro (macro-flonum-+m-max-plus-1-inexact);; (exact->inexact (macro-flonum-+m-max-plus-1))
+  9007199254740992.0)
+
+(@@define-macro (macro-flonum-inverse-+m-max-plus-1-inexact);; (/ (macro-flonum-+m-max-plus-1-inexact))
+  (/ 9007199254740992.0))
+
+(@@define-macro (macro-flonum--m-min) ;; (- (macro-flonum-+m-min))
+  -4503599627370496)
+
+(@@define-macro (macro-flonum--m-max) ;; (- (macro-flonum-+m-max))
+  -9007199254740991)
+
+(@@define-macro (macro-flonum-e-bias) ;; (- (expt 2 (- (macro-flonum-e-bits) 1)) 1)
+  1023)
+
+(@@define-macro (macro-flonum-e-bias-plus-1) ;; (+ (macro-flonum-e-bias) 1)
+  1024)
+
+(@@define-macro (macro-flonum-e-bias-minus-1) ;; (- (macro-flonum-e-bias) 1)
+  1022)
+
+(@@define-macro (macro-flonum-e-min) ;; (- (+ (macro-flonum-e-bias) (macro-flonum-m-bits) -1))
+  -1074)
+
+(@@define-macro (macro-flonum-min-normal) ;; (expt 2.0 (+ (macro-flonum-m-bits) (macro-flonum-e-min)))
+  (expt 2.0 (+ 52 -1074)))
+
+(@@define-macro (macro-scale-down) ;; (expt 2 (- (+ (quotient (macro-flonum-e-bias-plus-1) 2) 1)))
+  (expt 2 -513))
+
+(@@define-macro (macro-inexact-scale-down) ;; (expt 2.0 (- (+ (quotient (macro-flonum-e-bias-plus-1) 2) 1)))
+  (expt 2.0 -513))
+
+(@@define-macro (macro-scale-up) ;; (expt 2 (+ (quotient (macro-flonum-e-bias-plus-1) 2) (macro-flonum-m-bits-plus-1)))
+  (expt 2 565))
+
+(@@define-macro (macro-inexact-scale-up) ;; (expt 2.0 (+ (quotient (macro-flonum-e-bias-plus-1) 2) (macro-flonum-m-bits-plus-1)))
+  (expt 2.0 565))
+
+(@@define-macro (macro-inexact-radix) ;; (exact->inexact (macro-radix))
+  16384.0)
 
 (define-syntax macro-number-dispatch
   (lambda (stx)
