@@ -1,7 +1,7 @@
 #lang racket
 (require "_num_.rkt"
          "translate.rkt")
-(provide @@= @@<)
+(provide @@+ @@= @@<)
 ;;;============================================================================
 
 ;;; File: "_num.scm"
@@ -1748,7 +1748,7 @@
   (define (general-base a b)
     (if (@@eqv? b 0)
         a
-        (let ((rem (cdr (@@exact-int.div a b   ;; calculate (remainder a b)
+        (let ((rem (@@cdr (@@exact-int.div a b   ;; calculate (remainder a b)
                                          #f    ;; need-quotient?
                                          #f    ;; keep-dividend?
                                          ))))
@@ -5981,22 +5981,6 @@ ___RESULT = result;
                result)))))
 
 ;;; Bignum multiplication.
-(define (rktnum->bignum x)
-  (define adigit-modulus (expt 2 @@bignum.adigit-width))
-  (define magnitude (abs x))
-  (define adigits
-    (for/vector ((_ (in-naturals)) #:break (zero? magnitude))
-      (define adigit (modulo magnitude adigit-modulus))
-      (set! magnitude (quotient magnitude adigit-modulus))
-      adigit))
-  (if (negative? x) (@@bignum.- (@@fixnum->bignum 0) (bignum adigits)) (bignum adigits)))
-(define (bignum->rktnum x)
-  (define adigit-modulus (expt 2 @@bignum.adigit-width))
-  (if (@@bignum.negative? x)
-      (- (bignum->rktnum (@@bignum.- (@@fixnum->bignum 0) x)))
-      (for/sum ((adigit (in-vector (adigits x)))
-                (i (in-naturals)))
-        (* adigit (expt adigit-modulus i)))))
 (define-prim (@@bignum.* x y)
   (rktnum->bignum (* (bignum->rktnum x) (bignum->rktnum y))))
 #;(define-prim (@@bignum.* x y)

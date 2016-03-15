@@ -1,18 +1,16 @@
 #lang racket
 
-(require "_num.rkt"
+(require "toplevel.rkt"
          "translate.rkt")
 (provide gambit-lookup
          from-rktnum
          to-rktnum)
 
-(define gambit-+ (void))
-(define gambit-= (void))
-(define gambit-< (void))
+(define lookup-table
+  `((,+ . ,gambit-+)
+    (,= . ,void)
+    (,< . ,void)))
 
 (define (gambit-lookup fun)
-  (case fun
-    ((+) gambit-+)
-    ((=) gambit-=)
-    ((<) gambit-<)
-    (else #f)))
+  (let ((result (assoc fun lookup-table)))
+    (and result (cdr result))))

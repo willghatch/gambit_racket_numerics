@@ -1,7 +1,7 @@
 #lang racket
 (require "_num_.rkt"
          "constants.rkt")
-(provide to-rktnum from-rktnum)
+(provide to-rktnum from-rktnum rktnum->bignum bignum->rktnum)
 
 (define (to-rktnum x)
   (cond ((fixnum? x) x)
@@ -41,6 +41,6 @@
   (define adigit-modulus (expt 2 @@bignum.adigit-width))
   (if (@@bignum.negative? x)
       (- (bignum->rktnum (bignum.- (@@fixnum->bignum 0) x)))
-      (for/sum ((adigit (in-vector (adigits x)))
+      (for/sum ((adigit (in-vector (bignum-adigits x)))
                 (i (in-naturals)))
         (* adigit (expt adigit-modulus i)))))

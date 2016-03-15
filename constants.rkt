@@ -1,5 +1,5 @@
 #lang racket
-(provide (all-defined-out))
+(provide min-fixnum max-fixnum)
 
-(define max-fixnum (- (expt 2 29) 1))
-(define min-fixnum (- (expt 2 29)))
+(define min-fixnum -536870912)
+(define max-fixnum 536870911)

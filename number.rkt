@@ -1,7 +1,6 @@
 #lang racket
 
-(require "testing.rkt")
-(require racket/extflonum)
+(require "testing.rkt" racket/extflonum)
 
 #;(Section 'numbers)
 

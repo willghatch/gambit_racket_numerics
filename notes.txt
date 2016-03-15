@@ -106,3 +106,6 @@
 
 #;(define @@bignum.fast-gcd-size @@bignum.naive-mul-max-width)  ;; must be >= 64
 #;(set! @@bignum.fast-gcd-size @@bignum.fast-gcd-size)
+
+neil toronto
+racketcon 2013 (yt) floating point

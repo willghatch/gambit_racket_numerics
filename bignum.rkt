@@ -1,8 +1,9 @@
 #lang racket
 (require racket/fixnum
-         "constants.rkt")
-(provide adigits
-         bignum
+         "constants.rkt"
+         "bignum_config.rkt")
+(provide bignum
+         bignum-adigits
          bignum?
          @@bignum?
          @@bignum.negative?
@@ -53,13 +54,13 @@ Our represention is a vector of adigits, represented a racket number
   (not (zero? (bitwise-and most-significant-adigit-bit
                            (vector-ref (adigits x) (- (vector-length (adigits x)) 1))))))
 (define (@@bignum.adigit-length x) (vector-length (adigits x)))
-(define (@@bignum.mdigit-length x) (* (@@bignum.adigit-length (adigits x)) mdigits-in-adigit))
+(define (@@bignum.mdigit-length x) (* (@@bignum.adigit-length x) mdigits-in-adigit))
 (define (@@bignum.adigit-< x y i)
   (< (vector-ref (adigits x) i) (vector-ref (adigits y) i)))
 (define (@@fixnum->bignum x) (bignum (vector (modulo (+ x adigit-modulus) adigit-modulus))))
 (define (@@bignum.make k x complement?)
   (define y (make-vector k 0))
-  (for ((adigit (in-vector (adigits x)))
+  (for ((adigit (in-vector (adigits (or x (bignum (vector))))))
         (i (in-range k)))
     (vector-set! y i adigit))
   (when complement?
@@ -76,7 +77,7 @@ Our represention is a vector of adigits, represented a racket number
   (if (< diff 0) 1 0))
 (define (@@bignum.adigit-inc! x i)
   (define sum (add1 (vector-ref (adigits x) i)))
-  (vector-set! (adigits x) i (modulo adigit-modulus))
+  (vector-set! (adigits x) i (modulo sum adigit-modulus))
   (quotient sum adigit-modulus))
 (define (@@bignum.adigit-dec! x i)
   (define diff (sub1 (vector-ref (adigits x) i)))
@@ -87,7 +88,14 @@ Our represention is a vector of adigits, represented a racket number
 (define (@@bignum.adigit-copy! x i y j)
   (vector-set! (adigits x) i (vector-ref (adigits y) j)))
 (define (@@bignum.adigit-cat! x i hi j lo k divider)
-  (void)) ;; Incomplete
+  (displayln x)
+  (displayln i)
+  (displayln hi)
+  (displayln j)
+  (displayln lo)
+  (displayln k)
+  (displayln divider)
+  (error '@@bignum.adigit-cat!)) ;; Incomplete
 (define (@@bignum.adigit-zero? x i)
   (zero? (vector-ref (adigits x) i)))
 (define (@@bignum.adigit-ones? x i)
@@ -110,18 +118,24 @@ Our represention is a vector of adigits, represented a racket number
       (* mdigit (expt mdigit-modulus mdigit-subindex))))
   (vector-set! (adigits x) adigit-index new-adigit))
 (define (@@bignum.mdigit-mul! x i y j multiplier carry)
-  (void))
+  (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-div! x i y j quotient borrow)
-  (void)) ;; Incomplete
+  (error 'unimplemented)) ;; Incomplete
+; (top-2*mdigit-width-bits-of-v
+;   (@@bignum.arithmetic-shift-into! v (@@fx- (@@fx* @@bignum.mdigit-width 2) v-bits) temp))
+; (v_n-1
+;   (@@bignum.mdigit-ref top-2*mdigit-width-bits-of-v 1))
+; (v_n-2
+;   (@@bignum.mdigit-ref top-2*mdigit-width-bits-of-v 0))
 (define (@@bignum.mdigit-quotient u j v_n-1)
-  (void)) ;; Incomplete
+  (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-remainder u j v_n-1 q-hat)
-  (void)) ;; Incomplete
+  (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2)
-  (void)) ;; Incomplete
-(define @@bignum.fdigit-width 8)
-(define @@bignum.mdigit-width 16)
-(define @@bignum.adigit-width 64)
+  (error 'unimplemented)) ;; Incomplete
+(define @@bignum.fdigit-width fdigit-width)
+(define @@bignum.mdigit-width mdigit-width)
+(define @@bignum.adigit-width adigit-width)
 
 (define most-significant-adigit-bit (expt 2 @@bignum.adigit-width))
 (define adigit-modulus (expt 2 @@bignum.adigit-width))
@@ -262,13 +276,10 @@ Our represention is a vector of adigits, represented a racket number
                               (@@fx- i 1))))))))))
 
 (define-prim (@@bignum.normalize! result)
-
   (@@declare (not interrupts-enabled))
-
   (or (@@bignum->fixnum? result)
 
       (let ((n (@@fx- (@@bignum.adigit-length result) 1)))
-
         (cond ((@@bignum.adigit-zero? result n)
                (let loop1 ((i (@@fx- n 1)))
                  (cond ((@@fx< i 0)
