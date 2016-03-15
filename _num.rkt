@@ -1,7 +1,7 @@
 ;; original: gambit/lib/_num.scm
 #lang racket
 
-(require "_num_.rkt"
+(require "definitions.rkt"
          "translate.rkt")
 
 (provide @@+ @@= @@<)
