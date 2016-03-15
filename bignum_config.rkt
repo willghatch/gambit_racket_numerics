@@ -1,4 +1,5 @@
 #lang racket
+
 (provide fdigit-width mdigit-width adigit-width)
 
 (define fdigit-width 8)

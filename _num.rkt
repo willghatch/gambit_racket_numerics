@@ -1,7 +1,11 @@
+;; original: gambit/lib/_num.scm
 #lang racket
+
 (require "_num_.rkt"
          "translate.rkt")
+
 (provide @@+ @@= @@<)
+
 ;;;============================================================================
 
 ;;; File: "_num.scm"
@@ -10458,7 +10462,7 @@ ___RESULT = result;
       (@@vector-set! z 1 (@@fx- (@@vector-ref z 1) (macro-flonum-m-bits)))
       z)))
 
-#;(define-prim (@@flonum->exact x)
+(define-prim (@@flonum->exact x)
   (let ((y (@@flonum->exact-exponential-format x)))
     (@@exact-int.*-expt2
      (if (@@fxnegative? (@@vector-ref y 2))

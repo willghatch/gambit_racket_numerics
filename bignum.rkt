@@ -1,7 +1,9 @@
 #lang racket
+
 (require racket/fixnum
          "constants.rkt"
          "bignum_config.rkt")
+
 (provide bignum
          bignum-adigits
          bignum?
@@ -34,16 +36,7 @@
          @@bignum.adigit-width
          bignum.-)
 
-#|
-Bignum Representation
-adigit := value between 0 and 2 ^ 64 - 1
-mdigit := value between 0 and 2 ^ 16 - 1
-fdigit := value between 0 and 2 ^ 8 - 1
-Probably the representation of bignums uses 64 bit values for adigits.
-As a result mdigits come in multiples of 4
-The representation is a normal two's complement number
-Our represention is a vector of adigits, represented a racket number
-|#
+;; The bignum representation is a struct-wrapped vector of adigits, represented by racket numbers
 
 (struct bignum (adigits) #:mutable #:transparent)
 (define-syntax-rule (adigits x) (bignum-adigits x))
@@ -88,14 +81,7 @@ Our represention is a vector of adigits, represented a racket number
 (define (@@bignum.adigit-copy! x i y j)
   (vector-set! (adigits x) i (vector-ref (adigits y) j)))
 (define (@@bignum.adigit-cat! x i hi j lo k divider)
-  (displayln x)
-  (displayln i)
-  (displayln hi)
-  (displayln j)
-  (displayln lo)
-  (displayln k)
-  (displayln divider)
-  (error '@@bignum.adigit-cat!)) ;; Incomplete
+  (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.adigit-zero? x i)
   (zero? (vector-ref (adigits x) i)))
 (define (@@bignum.adigit-ones? x i)
@@ -121,12 +107,6 @@ Our represention is a vector of adigits, represented a racket number
   (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-div! x i y j quotient borrow)
   (error 'unimplemented)) ;; Incomplete
-; (top-2*mdigit-width-bits-of-v
-;   (@@bignum.arithmetic-shift-into! v (@@fx- (@@fx* @@bignum.mdigit-width 2) v-bits) temp))
-; (v_n-1
-;   (@@bignum.mdigit-ref top-2*mdigit-width-bits-of-v 1))
-; (v_n-2
-;   (@@bignum.mdigit-ref top-2*mdigit-width-bits-of-v 0))
 (define (@@bignum.mdigit-quotient u j v_n-1)
   (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-remainder u j v_n-1 q-hat)
@@ -143,6 +123,8 @@ Our represention is a vector of adigits, represented a racket number
 (define adigit-ones (- adigit-modulus 1))
 (define mdigit-ones (- mdigit-modulus 1))
 (define mdigits-in-adigit (/ @@bignum.adigit-width @@bignum.mdigit-width))
+
+;; Make bignum.- available to translate.rkt
 
 (define-syntax-rule (fixnum-bounds x)
   (if (or (< x min-fixnum) (> x max-fixnum)) #f x))

@@ -1,34 +1,22 @@
 #lang racket
+
 (require compatibility/defmacro
          racket/fixnum
          racket/flonum
          "bignum.rkt"
          "constants.rkt")
+
 (provide (all-defined-out)
          (all-from-out "bignum.rkt")
          flvector
          (rename-out [-if if]))
 
-(define-syntax-rule (@@define-macro args ...) (define-macro args ...))
-(define-syntax-rule (@@declare args ...) (void))
-(define-syntax-rule (declare args ...) (void))
+;; Data types
 
-(define-syntax (-if stx)
-  (syntax-case stx ()
-    ((_ test then else)
-     #'(if test then else))
-    ((_ test then)
-     #'(if test then (void)))))
+(struct ratnum (numerator denominator) #:transparent)
+(struct cpxnum (real imag) #:transparent)
 
-(define-syntax define-prim
-  (lambda (stx)
-    (syntax-case stx ()
-      ((_ (id . params) body ...)
-       #'(define-prim id
-           (lambda params
-             body ...)))
-       ((_ id val)
-        #'(define id val)))))
+;; Primitives
 
 (define-syntax-rule (fixnum-fail exps ...)
   (with-handlers ((exn:fail:contract:non-fixnum-result? (lambda (e) #f)))
@@ -37,19 +25,10 @@
 (define-syntax-rule (fixnum-bounds x)
   (if (or (< x min-fixnum) (> x max-fixnum)) #f x))
 
-(struct ratnum (numerator denominator) #:transparent)
-(define-syntax-rule (macro-ratnum-numerator x) (ratnum-numerator x))
-(define-syntax-rule (macro-ratnum-denominator x) (ratnum-denominator x))
-(define-syntax-rule (macro-ratnum-make n d) (ratnum n d))
-
-(struct cpxnum (real imag) #:transparent)
-(define-syntax-rule (macro-cpxnum-real x) (cpxnum-real x))
-(define-syntax-rule (macro-cpxnum-imag x) (cpxnum-imag x))
-(define-syntax-rule (macro-cpxnum-make r i) (cpxnum r i))
-
 (define (use-fast-bignum-algorithms) #f)
 (define (@@bignum.fast-gcd-size) (void))
 
+;; No memoization for now
 (define (@@make-table . args) (void))
 (define (@@table-ref . args) #f)
 (define (@@table-set! . args) (void))
@@ -152,19 +131,37 @@
 (define @@vector vector)
 (define @@vector-ref vector-ref)
 
-(define-prim (@@raise-type-exception arg-num type-id proc args)
-  (raise type-id))
-(define-prim (@@raise-range-exception arg-num proc args ...)
-  (raise 'range))
-(define-prim (@@raise-divide-by-zero-exception arg-num proc args ...)
-  (raise 'divide-by-zero))
-(define-prim (@@raise-heap-overflow-exception arg-num proc args ...)
-  (raise 'heap-overflow))
+;; Macros
 
-; agnostic implementation
-(define (@@flonum->exact x)
-  (let ((exact (inexact->exact x)))
-    (if (integer? exact) exact (ratnum (numerator exact) (denominator exact)))))
+(define-syntax-rule (@@define-macro args ...) (define-macro args ...))
+(define-syntax-rule (@@declare args ...) (void))
+(define-syntax-rule (declare args ...) (void))
+
+;; Handle gambit optional else branch
+(define-syntax (-if stx)
+  (syntax-case stx ()
+    ((_ test then else)
+     #'(if test then else))
+    ((_ test then)
+     #'(if test then (void)))))
+
+(define-syntax-rule (macro-ratnum-numerator x) (ratnum-numerator x))
+(define-syntax-rule (macro-ratnum-denominator x) (ratnum-denominator x))
+(define-syntax-rule (macro-ratnum-make n d) (ratnum n d))
+
+(define-syntax-rule (macro-cpxnum-real x) (cpxnum-real x))
+(define-syntax-rule (macro-cpxnum-imag x) (cpxnum-imag x))
+(define-syntax-rule (macro-cpxnum-make r i) (cpxnum r i))
+
+(define-syntax define-prim
+  (lambda (stx)
+    (syntax-case stx ()
+      ((_ (id . params) body ...)
+       #'(define-prim id
+           (lambda params
+             body ...)))
+       ((_ id val)
+        #'(define id val)))))
 
 (define-macro (define-check-type type-id type predicate . arguments)
   (define (sym . lst)
@@ -213,13 +210,6 @@
             ,(failure '(unquote @@fail-check-type)))
           ,expr)))))
 
-#;(define-check-type real 'real
-  @@real?)
-#;(define-check-type fixnum 'fixnum
-  @@fixnum?)
-#;(define-check-type flonum 'flonum
-  @@flonum?)
-
 (@@define-macro (define-fail-check-type type-name . type-id)
   (define (sym . lst)
     (string->symbol (apply string-append (map symbol->string lst))))
@@ -231,13 +221,6 @@
         ,(if (pair? type-id) (car type-id) `',type-name)
         proc
         args))))
-
-(define-fail-check-type real 'real)
-(define-fail-check-type number 'number)
-(define-fail-check-type integer 'integer)
-(define-fail-check-type exact-integer 'exact-integer)
-(define-fail-check-type rational 'rational)
-(define-fail-check-type finite-real 'finite-real)
 
 (@@define-macro (macro-exact-int? obj) ;; obj can be any object
   `(or (@@fixnum? ,obj)
@@ -439,3 +422,21 @@
              (bindings #'(let bindings expr)))
 
            #'expr)))))
+
+;; Other definitions
+
+(define-prim (@@raise-type-exception arg-num type-id proc args)
+  (raise type-id))
+(define-prim (@@raise-range-exception arg-num proc args ...)
+  (raise 'range))
+(define-prim (@@raise-divide-by-zero-exception arg-num proc args ...)
+  (raise 'divide-by-zero))
+(define-prim (@@raise-heap-overflow-exception arg-num proc args ...)
+  (raise 'heap-overflow))
+
+(define-fail-check-type real 'real)
+(define-fail-check-type number 'number)
+(define-fail-check-type integer 'integer)
+(define-fail-check-type exact-integer 'exact-integer)
+(define-fail-check-type rational 'rational)
+(define-fail-check-type finite-real 'finite-real)
