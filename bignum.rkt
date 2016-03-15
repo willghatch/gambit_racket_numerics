@@ -78,7 +78,13 @@
 (define (@@bignum.adigit-copy! x i y j)
   (vector-set! (adigits x) i (vector-ref (adigits y) j)))
 (define (@@bignum.adigit-cat! x i hi j lo k divider)
-  (error 'unimplemented)) ;; Incomplete
+  (println (list '@@bignum.adigit-cat! x i hi j lo k divider))
+  (define hi-mask (* adigit-ones (expt 2 divider)))
+  (define lo-mask (quotient adigit-ones (expt 2 (- @@bignum.adigit-width divider))))
+  (vector-set! (adigits x) i
+               (+ (bitwise-and hi-mask (vector-ref (adigits hi) j))
+                  (bitwise-and lo-mask (vector-ref (adigits lo) k))))
+  x)
 (define (@@bignum.adigit-zero? x i)
   (zero? (vector-ref (adigits x) i)))
 (define (@@bignum.adigit-ones? x i)
@@ -101,14 +107,19 @@
       (* mdigit (expt mdigit-modulus mdigit-subindex))))
   (vector-set! (adigits x) adigit-index new-adigit))
 (define (@@bignum.mdigit-mul! x i y j multiplier carry)
+  (println (list '@@bignum.mdigit-mul! x i y j multiplier carry))
   (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-div! x i y j quotient borrow)
+  (println (list '@@bignum.mdigit-div! x i y j quotient borrow))
   (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-quotient u j v_n-1)
+  (println (list '@@bignum.mdigit-quotient u j v_n-1))
   (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-remainder u j v_n-1 q-hat)
+  (println (list '@@bignum.mdigit-remainder u j v_n-1 q-hat))
   (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2)
+  (println (list '@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2))
   (error 'unimplemented)) ;; Incomplete
 (define @@bignum.fdigit-width fdigit-width)
 (define @@bignum.mdigit-width mdigit-width)

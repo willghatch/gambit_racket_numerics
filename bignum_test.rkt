@@ -38,6 +38,48 @@
 (define adigit-modulus (expt 2 @@bignum.adigit-width))
 (define adigit-ones (- adigit-modulus 1))
 
+(define-syntax-rule (gambit-bignum adigits ...)
+  `(let* ((mdigit-modulus (expt 2 @@bignum.mdigit-width))
+          (mdigits-in-adigit (/ @@bignum.adigit-width
+                                @@bignum.mdigit-width))
+          (lst (list adigits ...))
+          (k (length lst))
+          (x (@@bignum.make k #f #f)))
+     (let loop1 ((i 0) (lst lst))
+       (if (pair? lst)
+           (let ()
+             (let loop2 ((j 0))
+               (if (< j mdigits-in-adigit)
+                   (let ()
+                     (@@bignum.mdigit-set!
+                       x (+ (* i mdigits-in-adigit) j)
+                       (modulo (quotient (car lst) (expt mdigit-modulus j))
+                               mdigit-modulus))
+                     (loop2 (+ j 1)))))
+             (loop1 (+ i 1) (cdr lst)))
+           x))))
+
+(define-syntax-rule (racket-bignum adigits ...)
+  (bignum (vector adigits ...)))
+
+(define-syntax-rule (gambit-decode x)
+  `(let ((mdigit-modulus (expt 2 @@bignum.mdigit-width))
+         (mdigits-in-adigit (/ @@bignum.adigit-width
+                               @@bignum.mdigit-width)))
+     (let loop1 ((i 0))
+       (if (< i (@@bignum.adigit-length x))
+           (cons (let loop2 ((j 0))
+                   (if (< j mdigits-in-adigit)
+                       (+ (* (expt mdigit-modulus j)
+                             (@@bignum.mdigit-ref x (+ (* i mdigits-in-adigit) j)))
+                          (loop2 (+ j 1)))
+                         0))
+                 (loop1 (+ i 1)))
+           (list)))))
+
+(define-syntax-rule (racket-decode x)
+  (vector->list (bignum-adigits x)))
+
 ;; Tests
 
 (test-bignum (list @@bignum.fdigit-width
@@ -47,9 +89,21 @@
                    @@bignum.mdigit-width
                    @@bignum.adigit-width))
 
-(test-bignum (let* ((x (bignum (vector adigit-ones adigit-ones 0)))
+(test-bignum (let* ((x (racket-bignum adigit-ones adigit-ones 0))
                     (ans (@@bignum.adigit-inc! x 1)))
-               (list (to-rktnum x) ans))
-             (let* ((x ,(to-rktnum (bignum (vector adigit-ones adigit-ones 0))))
+               (list (racket-decode x) ans))
+             (let* ((x ,(gambit-bignum ,adigit-ones ,adigit-ones 0))
                     (ans (@@bignum.adigit-inc! x 1)))
-               (list x ans)))
+               (list ,(gambit-decode x) ans)))
+
+
+(test-bignum (let* ((x (racket-bignum 0 0))
+                    (hi (racket-bignum 0))
+                    (lo (racket-bignum 36028797018963968)))
+               (@@bignum.adigit-cat! x 1 hi 0 lo 0 8)
+               (racket-decode x))
+             (let* ((x ,(gambit-bignum 0 0))
+                    (hi ,(gambit-bignum 0))
+                    (lo ,(gambit-bignum 36028797018963968)))
+               (@@bignum.adigit-cat! x 1 hi 0 lo 0 8)
+               ,(gambit-decode x)))
