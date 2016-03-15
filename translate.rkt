@@ -1,6 +1,7 @@
 #lang racket
 
 (require "definitions.rkt"
+         "cheat.rkt"
          "constants.rkt")
 
 (provide to-rktnum from-rktnum rktnum->bignum bignum->rktnum)

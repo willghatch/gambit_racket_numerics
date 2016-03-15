@@ -54,3 +54,9 @@ Uses the mappings in interface.rkt to provide a testing framework that tests usi
 Racket's numerics test suite. Uses the framework provided in testing.rkt.
 
 ## State of the project
+
+The uncommented parts of _num.rkt are the parts necessary to run @@=, @@<, and @@+ with the exception that @@bignum.* has a cheat implementation to avoid letting the dependency tree grow too wide (Karatsuba multiplication).
+
+The cheat implementation relies on translate.rkt, but translate.rkt originally relied on @@bignum.-, so to avoid a circular dependency, a copy of the implementation of @@bignum.- was moved to cheat.rkt.
+
+The bignum implementation is undertested. And the racket numerics test suite does not currently run due to unimplemented bignum primitives. It may be a good idea to test definitions.rkt as well.
