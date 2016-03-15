@@ -4,8 +4,10 @@ Run Gambit Scheme numerics (gambit/lib/_num.scm) in Racket.
 
 ## Prerequisites
 
+```
 Racket (>6.3.0.14)
 Gambit Scheme (gsi)
+```
 
 ## Usage
 
@@ -35,7 +37,7 @@ Tests the the bignum primitives implementation against gambit.
 
 #### toplevel.rkt
 
-Packages primitives exported by _num.rkt as top-level functions, for example n-ary gambit-+ rather than binary @@+.
+Packages primitives exported by _num.rkt as top-level functions, for example n-ary `gambit-+` rather than binary `@@+`.
 
 #### translate.rkt
 
@@ -55,8 +57,8 @@ Racket's numerics test suite. Uses the framework provided in testing.rkt.
 
 ## State of the project
 
-The uncommented parts of _num.rkt are the parts necessary to run @@=, @@<, and @@+ with the exception that @@bignum.* has a cheat implementation to avoid letting the dependency tree grow too wide (Karatsuba multiplication).
+The uncommented parts of _num.rkt are the parts necessary to run `@@=`, `@@<`, and `@@+` with the exception that `@@bignum.*` has a cheat implementation to avoid letting the dependency tree grow too wide (Karatsuba multiplication).
 
-The cheat implementation relies on translate.rkt, but translate.rkt originally relied on @@bignum.-, so to avoid a circular dependency, a copy of the implementation of @@bignum.- was moved to cheat.rkt.
+The cheat implementation relies on translate.rkt, but translate.rkt originally relied on `@@bignum.-`, so to avoid a circular dependency, a copy of the implementation of `@@bignum.-` was moved to cheat.rkt.
 
 The bignum implementation is undertested. And the racket numerics test suite does not currently run due to unimplemented bignum primitives. It may be a good idea to test definitions.rkt as well.
