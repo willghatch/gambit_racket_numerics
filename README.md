@@ -17,39 +17,39 @@ Generate _num.no#.scm, _num.rkt.orig, and _num.rkt.comment based on _num.scm wit
 
 ## Structure
 
-### _num.rkt
+#### _num.rkt
 
 Partially commented out version of _num.scm. Defines numerical primitives.
 
-### definitions.rkt
+#### definitions.rkt
 
 Definitions needed by _num.rkt.
 
-### bignum.rkt
+#### bignum.rkt
 
 Definitions of bignum primitives.
 
-### bignum_test.rkt
+#### bignum_test.rkt
 
 Tests the the bignum primitives implementation against gambit.
 
-### toplevel.rkt
+#### toplevel.rkt
 
 Packages primitives exported by _num.rkt as top-level functions, for example n-ary gambit-+ rather than binary @@+.
 
-### translate.rkt
+#### translate.rkt
 
 Provides functionality for transforming between racket's native representation of numbers and this project's representation.
 
-### interface.rkt
+#### interface.rkt
 
 Maps native racket functions to this project's functions for testing.
 
-### testing.rkt
+#### testing.rkt
 
 Uses the mappings in interface.rkt to provide a testing framework that tests using the project's implementations when available.
 
-### number.rkt
+#### number.rkt
 
 Racket's numerics test suite. Uses the framework provided in testing.rkt.
 
