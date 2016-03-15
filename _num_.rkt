@@ -33,11 +33,13 @@
 (define (@@table-ref . args) #f)
 (define (@@table-set! . args) (void))
 
+;; cons represented as length 2 vector to facilitate mutating
 (define @@cons (lambda (x y) (vector x y)))
 (define @@car (lambda (x) (vector-ref x 0)))
 (define @@cdr (lambda (x) (vector-ref x 1)))
 (define @@set-car! (lambda (x y) (vector-set! x 0 y)))
 (define @@set-cdr! (lambda (x y) (vector-set! x 1 y)))
+
 (define @@eqv? eqv?)
 (define @@not not)
 (define @@fixnum? fixnum?)
@@ -128,8 +130,10 @@
 (define @@f64vector-set! flvector-set!)
 (define @@f64vector-ref flvector-ref)
 (define @@f64vector flvector)
+
 (define @@vector vector)
 (define @@vector-ref vector-ref)
+(define @@vector-set! vector-set!)
 
 ;; Macros
 

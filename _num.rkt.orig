@@ -1,5 +1,5 @@
+;; original: gambit/lib/_num.scm
 #lang racket
-(require "_num#.rkt")
 ;;;============================================================================
 
 ;;; File: "_num.scm"
@@ -9,7 +9,7 @@
 
 ;;;============================================================================
 
-#;(macro-case-target
+(macro-case-target
  ((C)
   (c-declare "#include \"mem.h\"")
   (@@define-macro (use-fast-bignum-algorithms) #t))
@@ -20,9 +20,9 @@
 
 ;;; Implementation of exceptions.
 
-#;(implement-library-type-range-exception)
+(implement-library-type-range-exception)
 
-#;(define-prim (@@raise-range-exception arg-num proc . args)
+(define-prim (@@raise-range-exception arg-num proc . args)
   (@@extract-procedure-and-arguments
    proc
    args
@@ -33,9 +33,9 @@
      (macro-raise
       (macro-make-range-exception procedure arguments arg-num)))))
 
-#;(implement-library-type-divide-by-zero-exception)
+(implement-library-type-divide-by-zero-exception)
 
-#;(define-prim (@@raise-divide-by-zero-exception proc . args)
+(define-prim (@@raise-divide-by-zero-exception proc . args)
   (@@extract-procedure-and-arguments
    proc
    args
@@ -46,9 +46,9 @@
      (macro-raise
       (macro-make-divide-by-zero-exception procedure arguments)))))
 
-#;(implement-library-type-fixnum-overflow-exception)
+(implement-library-type-fixnum-overflow-exception)
 
-#;(define-prim (@@raise-fixnum-overflow-exception proc . args)
+(define-prim (@@raise-fixnum-overflow-exception proc . args)
   (@@extract-procedure-and-arguments
    proc
    args
@@ -63,41 +63,41 @@
 
 ;;; Define type checking procedures.
 
-#;(define-fail-check-type exact-signed-int8 'exact-signed-int8)
-#;(define-fail-check-type exact-signed-int8-list 'exact-signed-int8-list)
-#;(define-fail-check-type exact-unsigned-int8 'exact-unsigned-int8)
-#;(define-fail-check-type exact-unsigned-int8-list 'exact-unsigned-int8-list)
-#;(define-fail-check-type exact-signed-int16 'exact-signed-int16)
-#;(define-fail-check-type exact-signed-int16-list 'exact-signed-int16-list)
-#;(define-fail-check-type exact-unsigned-int16 'exact-unsigned-int16)
-#;(define-fail-check-type exact-unsigned-int16-list 'exact-unsigned-int16-list)
-#;(define-fail-check-type exact-signed-int32 'exact-signed-int32)
-#;(define-fail-check-type exact-signed-int32-list 'exact-signed-int32-list)
-#;(define-fail-check-type exact-unsigned-int32 'exact-unsigned-int32)
-#;(define-fail-check-type exact-unsigned-int32-list 'exact-unsigned-int32-list)
-#;(define-fail-check-type exact-signed-int64 'exact-signed-int64)
-#;(define-fail-check-type exact-signed-int64-list 'exact-signed-int64-list)
-#;(define-fail-check-type exact-unsigned-int64 'exact-unsigned-int64)
-#;(define-fail-check-type exact-unsigned-int64-list 'exact-unsigned-int64-list)
-#;(define-fail-check-type inexact-real 'inexact-real)
-#;(define-fail-check-type inexact-real-list 'inexact-real-list)
-#;(define-fail-check-type number 'number)
-#;(define-fail-check-type real 'real)
-#;(define-fail-check-type finite-real 'finite-real)
-#;(define-fail-check-type rational 'rational)
-#;(define-fail-check-type integer 'integer)
-#;(define-fail-check-type exact-integer 'exact-integer)
-#;(define-fail-check-type fixnum 'fixnum)
-#;(define-fail-check-type flonum 'flonum)
+(define-fail-check-type exact-signed-int8 'exact-signed-int8)
+(define-fail-check-type exact-signed-int8-list 'exact-signed-int8-list)
+(define-fail-check-type exact-unsigned-int8 'exact-unsigned-int8)
+(define-fail-check-type exact-unsigned-int8-list 'exact-unsigned-int8-list)
+(define-fail-check-type exact-signed-int16 'exact-signed-int16)
+(define-fail-check-type exact-signed-int16-list 'exact-signed-int16-list)
+(define-fail-check-type exact-unsigned-int16 'exact-unsigned-int16)
+(define-fail-check-type exact-unsigned-int16-list 'exact-unsigned-int16-list)
+(define-fail-check-type exact-signed-int32 'exact-signed-int32)
+(define-fail-check-type exact-signed-int32-list 'exact-signed-int32-list)
+(define-fail-check-type exact-unsigned-int32 'exact-unsigned-int32)
+(define-fail-check-type exact-unsigned-int32-list 'exact-unsigned-int32-list)
+(define-fail-check-type exact-signed-int64 'exact-signed-int64)
+(define-fail-check-type exact-signed-int64-list 'exact-signed-int64-list)
+(define-fail-check-type exact-unsigned-int64 'exact-unsigned-int64)
+(define-fail-check-type exact-unsigned-int64-list 'exact-unsigned-int64-list)
+(define-fail-check-type inexact-real 'inexact-real)
+(define-fail-check-type inexact-real-list 'inexact-real-list)
+(define-fail-check-type number 'number)
+(define-fail-check-type real 'real)
+(define-fail-check-type finite-real 'finite-real)
+(define-fail-check-type rational 'rational)
+(define-fail-check-type integer 'integer)
+(define-fail-check-type exact-integer 'exact-integer)
+(define-fail-check-type fixnum 'fixnum)
+(define-fail-check-type flonum 'flonum)
 
 ;;;----------------------------------------------------------------------------
 
 ;;; Numerical type predicates.
 
-#;(define-prim (@@number? x)
+(define-prim (@@number? x)
   (@@complex? x))
 
-#;(define-prim (@@complex? x)
+(define-prim (@@complex? x)
   (macro-number-dispatch x #f
     #t ;; x = fixnum
     #t ;; x = bignum
@@ -105,15 +105,15 @@
     #t ;; x = flonum
     #t)) ;; x = cpxnum
 
-#;(define-prim (number? x)
+(define-prim (number? x)
   (macro-force-vars (x)
     (@@number? x)))
 
-#;(define-prim (complex? x)
+(define-prim (complex? x)
   (macro-force-vars (x)
     (@@complex? x)))
 
-#;(define-prim (@@real? x)
+(define-prim (@@real? x)
   (macro-number-dispatch x #f
     #t ;; x = fixnum
     #t ;; x = bignum
@@ -121,11 +121,11 @@
     #t ;; x = flonum
     (macro-cpxnum-real? x))) ;; x = cpxnum
 
-#;(define-prim (real? x)
+(define-prim (real? x)
   (macro-force-vars (x)
     (@@real? x)))
 
-#;(define-prim (@@rational? x)
+(define-prim (@@rational? x)
   (macro-number-dispatch x #f
     #t ;; x = fixnum
     #t ;; x = bignum
@@ -133,11 +133,11 @@
     (macro-flonum-rational? x) ;; x = flonum
     (macro-cpxnum-rational? x))) ;; x = cpxnum
 
-#;(define-prim (rational? x)
+(define-prim (rational? x)
   (macro-force-vars (x)
     (@@rational? x)))
 
-#;(define-prim (@@integer? x)
+(define-prim (@@integer? x)
   (macro-number-dispatch x #f
     #t ;; x = fixnum
     #t ;; x = bignum
@@ -145,7 +145,7 @@
     (macro-flonum-int? x) ;; x = flonum
     (macro-cpxnum-int? x))) ;; x = cpxnum
 
-#;(define-prim (integer? x)
+(define-prim (integer? x)
   (macro-force-vars (x)
     (@@integer? x)))
 
@@ -153,7 +153,7 @@
 
 ;;; Exactness predicates.
 
-#;(define-prim (@@exact? x)
+(define-prim (@@exact? x)
 
   (define (type-error) #f)
 
@@ -165,7 +165,7 @@
     (and (@@not (@@flonum? (macro-cpxnum-real x))) ;; x = cpxnum
          (@@not (@@flonum? (macro-cpxnum-imag x))))))
 
-#;(define-prim (exact? x)
+(define-prim (exact? x)
   (macro-force-vars (x)
     (let ()
 
@@ -180,7 +180,7 @@
         (and (@@not (@@flonum? (macro-cpxnum-real x))) ;; x = cpxnum
              (@@not (@@flonum? (macro-cpxnum-imag x))))))))
 
-#;(define-prim (@@inexact? x)
+(define-prim (@@inexact? x)
 
   (define (type-error) #f)
 
@@ -192,7 +192,7 @@
     (or (@@flonum? (macro-cpxnum-real x)) ;; x = cpxnum
         (@@flonum? (macro-cpxnum-imag x)))))
 
-#;(define-prim (inexact? x)
+(define-prim (inexact? x)
   (macro-force-vars (x)
     (let ()
 
@@ -211,7 +211,7 @@
 
 ;;; Comparison predicates.
 
-#;(define-prim (@@= x y)
+(define-prim (@@= x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -265,7 +265,7 @@
       (@@cpxnum.= x (@@noncpxnum->cpxnum y))
       (@@cpxnum.= x y))))
 
-#;(define-prim-nary-bool (= x y)
+(define-prim-nary-bool (= x y)
   #t
   (if (@@number? x) #t '(1))
   (@@= x y)
@@ -273,7 +273,7 @@
   macro-no-check
   (@@pair? @@fail-check-number))
 
-#;(define-prim (@@< x y  (nan-result #f))
+(define-prim (@@< x y  (nan-result #f))
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -363,7 +363,7 @@
               (type-error-on-y)))
         (type-error-on-x))))
 
-#;(define-prim-nary-bool (< x y)
+(define-prim-nary-bool (< x y)
   #t
   (if (@@real? x) #t '(1))
   (@@< x y #f)
@@ -371,7 +371,7 @@
   macro-no-check
   (@@pair? @@fail-check-real))
 
-#;(define-prim-nary-bool (> x y)
+(define-prim-nary-bool (> x y)
   #t
   (if (@@real? x) #t '(1))
   (@@< y x #f)
@@ -379,7 +379,7 @@
   macro-no-check
   (@@pair? @@fail-check-real))
 
-#;(define-prim-nary-bool (<= x y)
+(define-prim-nary-bool (<= x y)
   #t
   (if (@@real? x) #t '(1))
   (@@not (@@< y x #t))
@@ -387,7 +387,7 @@
   macro-no-check
   (@@pair? @@fail-check-real))
 
-#;(define-prim-nary-bool (>= x y)
+(define-prim-nary-bool (>= x y)
   #t
   (if (@@real? x) #t '(1))
   (@@not (@@< x y #t))
@@ -399,7 +399,7 @@
 
 ;;; Numerical property predicates.
 
-#;(define-prim (@@zero? x)
+(define-prim (@@zero? x)
 
   (define (type-error)
     (@@fail-check-number 1 zero? x))
@@ -416,11 +416,11 @@
                (@@fxzero? real)
                (and (@@flonum? real) (@@flzero? real)))))))
 
-#;(define-prim (zero? x)
+(define-prim (zero? x)
   (macro-force-vars (x)
     (@@zero? x)))
 
-#;(define-prim (@@positive? x)
+(define-prim (@@positive? x)
 
   (define (type-error)
     (@@fail-check-real 1 positive? x))
@@ -434,11 +434,11 @@
         (@@positive? (macro-cpxnum-real x))
         (type-error))))
 
-#;(define-prim (positive? x)
+(define-prim (positive? x)
   (macro-force-vars (x)
     (@@positive? x)))
 
-#;(define-prim (@@negative? x)
+(define-prim (@@negative? x)
 
   (define (type-error)
     (@@fail-check-real 1 negative? x))
@@ -452,11 +452,11 @@
         (@@negative? (macro-cpxnum-real x))
         (type-error))))
 
-#;(define-prim (negative? x)
+(define-prim (negative? x)
   (macro-force-vars (x)
     (@@negative? x)))
 
-#;(define-prim (@@odd? x)
+(define-prim (@@odd? x)
 
   (define (type-error)
     (@@fail-check-integer 1 odd? x))
@@ -472,11 +472,11 @@
         (@@odd? (@@inexact->exact (macro-cpxnum-real x)))
         (type-error))))
 
-#;(define-prim (odd? x)
+(define-prim (odd? x)
   (macro-force-vars (x)
     (@@odd? x)))
 
-#;(define-prim (@@even? x)
+(define-prim (@@even? x)
 
   (define (type-error)
     (@@fail-check-integer 1 even? x))
@@ -492,11 +492,11 @@
         (@@even? (@@inexact->exact (macro-cpxnum-real x)))
         (type-error))))
 
-#;(define-prim (even? x)
+(define-prim (even? x)
   (macro-force-vars (x)
     (@@even? x)))
 
-#;(define-prim (@@finite? x)
+(define-prim (@@finite? x)
 
   (define (type-error)
     (@@fail-check-real 1 finite? x))
@@ -512,11 +512,11 @@
               (@@flfinite? real)))
         (type-error))))
 
-#;(define-prim (finite? x)
+(define-prim (finite? x)
   (macro-force-vars (x)
     (@@finite? x)))
 
-#;(define-prim (@@infinite? x)
+(define-prim (@@infinite? x)
 
   (define (type-error)
     (@@fail-check-real 1 infinite? x))
@@ -532,11 +532,11 @@
                (@@flinfinite? real)))
         (type-error))))
 
-#;(define-prim (infinite? x)
+(define-prim (infinite? x)
   (macro-force-vars (x)
     (@@infinite? x)))
 
-#;(define-prim (@@nan? x)
+(define-prim (@@nan? x)
 
   (define (type-error)
     (@@fail-check-real 1 nan? x))
@@ -552,7 +552,7 @@
                (@@flnan? real)))
         (type-error))))
 
-#;(define-prim (nan? x)
+(define-prim (nan? x)
   (macro-force-vars (x)
     (@@nan? x)))
 
@@ -560,7 +560,7 @@
 
 ;;; Max and min.
 
-#;(define-prim (@@max x y)
+(define-prim (@@max x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -614,7 +614,7 @@
               (type-error-on-y)))
         (type-error-on-x))))
 
-#;(define-prim-nary (max x y)
+(define-prim-nary (max x y)
   ()
   (if (@@real? x) x '(1))
   (@@max x y)
@@ -622,7 +622,7 @@
   macro-no-check
   (@@pair? @@fail-check-real))
 
-#;(define-prim (@@min x y)
+(define-prim (@@min x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -676,7 +676,7 @@
               (type-error-on-y)))
         (type-error-on-x))))
 
-#;(define-prim-nary (min x y)
+(define-prim-nary (min x y)
   ()
   (if (@@real? x) x '(1))
   (@@min x y)
@@ -688,7 +688,7 @@
 
 ;;; +, *, -, /
 
-#;(define-prim (@@+ x y)
+(define-prim (@@+ x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -747,7 +747,7 @@
       (@@cpxnum.+ x (@@noncpxnum->cpxnum y))
       (@@cpxnum.+ x y))))
 
-#;(define-prim-nary (+ x y)
+(define-prim-nary (+ x y)
   0
   (if (@@number? x) x '(1))
   (@@+ x y)
@@ -755,7 +755,7 @@
   macro-no-check
   (@@pair? @@fail-check-number))
 
-#;(define-prim (@@* x y)
+(define-prim (@@* x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -854,7 +854,7 @@
       (@@cpxnum.* x (@@noncpxnum->cpxnum y))
       (@@cpxnum.* x y))))
 
-#;(define-prim-nary (* x y)
+(define-prim-nary (* x y)
   1
   (if (@@number? x) x '(1))
   (@@* x y)
@@ -862,7 +862,7 @@
   macro-no-check
   (@@pair? @@fail-check-number))
 
-#;(define-prim (@@square x)
+(define-prim (@@square x)
 
   (define (type-error)
     (@@fail-check-number 1 square x))
@@ -882,11 +882,11 @@
                               (@@* 2 (@@* real imag)))
           (@@csquare (@@exact->inexact x))))))
 
-#;(define-prim (square x)
+(define-prim (square x)
   (macro-force-vars (x)
     (@@square x)))
 
-#;(define-prim (@@negate x)
+(define-prim (@@negate x)
 
   (@@define-macro (type-error) `'(1))
 
@@ -900,7 +900,7 @@
     (@@make-rectangular (@@negate (macro-cpxnum-real x))
                         (@@negate (macro-cpxnum-imag x)))))
 
-#;(define-prim (@@- x y)
+(define-prim (@@- x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -955,7 +955,7 @@
       (@@cpxnum.- x (@@noncpxnum->cpxnum y))
       (@@cpxnum.- x y))))
 
-#;(define-prim-nary (- x y)
+(define-prim-nary (- x y)
   ()
   (@@negate x)
   (@@- x y)
@@ -963,7 +963,7 @@
   macro-no-check
   (@@pair? @@fail-check-number))
 
-#;(define-prim (@@inverse x)
+(define-prim (@@inverse x)
 
   (@@define-macro (type-error) `'(1))
 
@@ -995,7 +995,7 @@
     (@@fl/ (macro-inexact-+1) x)
     (@@cpxnum./ (@@noncpxnum->cpxnum 1) x)))
 
-#;(define-prim (@@/ x y)
+(define-prim (@@/ x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -1084,7 +1084,7 @@
       (@@cpxnum./ (@@noncpxnum->cpxnum x) y)
       (@@cpxnum./ x y))))
 
-#;(define-prim-nary (/ x y)
+(define-prim-nary (/ x y)
   ()
   (@@inverse x)
   (@@/ x y)
@@ -1097,12 +1097,12 @@
 
 ;;; abs
 
-#;(define-prim (@@exact-int.negative? x)
+(define-prim (@@exact-int.negative? x)
   (if (@@fixnum? x)
       (@@fxnegative? x)
       (@@bignum.negative? x)))
 
-#;(define-prim (@@abs x)
+(define-prim (@@abs x)
 
   (define (type-error)
     (@@fail-check-real 1 abs x))
@@ -1120,7 +1120,7 @@
                             (@@abs (macro-cpxnum-imag x)))
         (type-error))))
 
-#;(define-prim (abs x)
+(define-prim (abs x)
   (macro-force-vars (x)
     (@@abs x)))
 
@@ -1128,7 +1128,7 @@
 
 ;;; quotient, remainder, modulo
 
-#;(define-prim (@@quotient x y)
+(define-prim (@@quotient x y)
 
   (define (type-error-on-x)
     (@@fail-check-integer 1 quotient x y))
@@ -1215,11 +1215,11 @@
               (type-error-on-x)))
         (type-error-on-y))))
 
-#;(define-prim (quotient x y)
+(define-prim (quotient x y)
   (macro-force-vars (x y)
     (@@quotient x y)))
 
-#;(define-prim (@@remainder x y)
+(define-prim (@@remainder x y)
 
   (define (type-error-on-x)
     (@@fail-check-integer 1 remainder x y))
@@ -1307,11 +1307,11 @@
               (type-error-on-x)))
         (type-error-on-y))))
 
-#;(define-prim (remainder x y)
+(define-prim (remainder x y)
   (macro-force-vars (x y)
     (@@remainder x y)))
 
-#;(define-prim (@@modulo x y)
+(define-prim (@@modulo x y)
 
   (define (type-error-on-x)
     (@@fail-check-integer 1 modulo x y))
@@ -1405,7 +1405,7 @@
               (type-error-on-x)))
         (type-error-on-y))))
 
-#;(define-prim (modulo x y)
+(define-prim (modulo x y)
   (macro-force-vars (x y)
     (@@modulo x y)))
 
@@ -1413,7 +1413,7 @@
 
 ;;; gcd, lcm
 
-#;(define-prim (@@gcd x y)
+(define-prim (@@gcd x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -1804,7 +1804,7 @@
              (exact-gcd x y)
              (@@exact->inexact (exact-gcd x y))))))
 
-#;(define-prim-nary (gcd x y)
+(define-prim-nary (gcd x y)
   0
   (if (@@integer? x) (@@abs x) '(1))
   (@@gcd x y)
@@ -1812,7 +1812,7 @@
   macro-no-check
   (@@pair? @@fail-check-integer))
 
-#;(define-prim (@@lcm x y)
+(define-prim (@@lcm x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -1837,7 +1837,7 @@
              (exact-lcm x y)
              (inexact-lcm x y)))))
 
-#;(define-prim-nary (lcm x y)
+(define-prim-nary (lcm x y)
   1
   (if (@@integer? x) (@@abs x) '(1))
   (@@lcm x y)
@@ -1849,7 +1849,7 @@
 
 ;;; numerator, denominator
 
-#;(define-prim (@@numerator x)
+(define-prim (@@numerator x)
 
   (define (type-error)
     (@@fail-check-rational 1 numerator x))
@@ -1868,11 +1868,11 @@
         (@@numerator (macro-cpxnum-real x))
         (type-error))))
 
-#;(define-prim (numerator x)
+(define-prim (numerator x)
   (macro-force-vars (x)
     (@@numerator x)))
 
-#;(define-prim (@@denominator x)
+(define-prim (@@denominator x)
 
   (define (type-error)
     (@@fail-check-rational 1 denominator x))
@@ -1888,7 +1888,7 @@
         (@@denominator (macro-cpxnum-real x))
         (type-error))))
 
-#;(define-prim (denominator x)
+(define-prim (denominator x)
   (macro-force-vars (x)
     (@@denominator x)))
 
@@ -1896,7 +1896,7 @@
 
 ;;; floor, ceiling, truncate, round
 
-#;(define-prim (@@floor x)
+(define-prim (@@floor x)
 
   (define (type-error)
     (@@fail-check-finite-real 1 floor x))
@@ -1916,11 +1916,11 @@
         (@@floor (macro-cpxnum-real x))
         (type-error))))
 
-#;(define-prim (floor x)
+(define-prim (floor x)
   (macro-force-vars (x)
     (@@floor x)))
 
-#;(define-prim (@@ceiling x)
+(define-prim (@@ceiling x)
 
   (define (type-error)
     (@@fail-check-finite-real 1 ceiling x))
@@ -1940,11 +1940,11 @@
         (@@ceiling (macro-cpxnum-real x))
         (type-error))))
 
-#;(define-prim (ceiling x)
+(define-prim (ceiling x)
   (macro-force-vars (x)
     (@@ceiling x)))
 
-#;(define-prim (@@truncate x)
+(define-prim (@@truncate x)
 
   (define (type-error)
     (@@fail-check-finite-real 1 truncate x))
@@ -1961,11 +1961,11 @@
         (@@truncate (macro-cpxnum-real x))
         (type-error))))
 
-#;(define-prim (truncate x)
+(define-prim (truncate x)
   (macro-force-vars (x)
     (@@truncate x)))
 
-#;(define-prim (@@round x)
+(define-prim (@@round x)
 
   (define (type-error)
     (@@fail-check-finite-real 1 round x))
@@ -1981,7 +1981,7 @@
         (@@round (macro-cpxnum-real x))
         (type-error))))
 
-#;(define-prim (round x)
+(define-prim (round x)
   (macro-force-vars (x)
     (@@round x)))
 
@@ -1989,7 +1989,7 @@
 
 ;;; rationalize
 
-#;(define-prim (@@rationalize x y)
+(define-prim (@@rationalize x y)
 
   (define (simplest-rational1 x y)
     (if (@@< y x)
@@ -2038,7 +2038,7 @@
             (simplest-rational1 (@@- exact-x exact-y)
                                 (@@+ exact-x exact-y)))))))
 
-#;(define-prim (rationalize x y)
+(define-prim (rationalize x y)
   (macro-force-vars (x y)
     (@@rationalize x y)))
 
@@ -2081,7 +2081,7 @@ for a discussion of branch cuts.
 |#
 
 
-#;(define-prim (@@cabs z)
+(define-prim (@@cabs z)
 
   ;; As far as I can tell, this is just magic.  It works, and I'm not
   ;; going to touch it.
@@ -2135,10 +2135,10 @@ for a discussion of branch cuts.
         (continue y x)
         (continue x y))))
 
-#;(define-prim (@@carg z)
+(define-prim (@@carg z)
   (@@angle z))
 
-#;(define-prim (@@csquare xi+ieta)
+(define-prim (@@csquare xi+ieta)
   (let ((xi  (macro-cpxnum-real xi+ieta))
         (eta (macro-cpxnum-imag xi+ieta)))
     (let ((x (@@fl* (@@fl- xi eta) (@@fl+ xi eta)))
@@ -2158,7 +2158,7 @@ for a discussion of branch cuts.
             (else
              (macro-cpxnum-make x y))))))
 
-#;(define-prim (@@cssqs x+iy)
+(define-prim (@@cssqs x+iy)
   (let ((x (macro-cpxnum-real x+iy))
         (y (macro-cpxnum-imag x+iy)))
     (cond ((or (@@flinfinite? x)
@@ -2183,7 +2183,7 @@ for a discussion of branch cuts.
                            k))
                  (@@cons rho 0)))))))
 
-#;(define-prim (@@csqrt x+iy)
+(define-prim (@@csqrt x+iy)
   (let* ((x (macro-cpxnum-real x+iy))
          (y (macro-cpxnum-imag x+iy))
          (rho+ik (@@cssqs x+iy))
@@ -2207,10 +2207,10 @@ for a discussion of branch cuts.
               (macro-cpxnum-make xi eta)))
         (macro-cpxnum-make xi eta))))
 
-#;(define-prim (@@cacos z)
+(define-prim (@@cacos z)
   (@@- (macro-inexact-+pi/2) (@@casin z)))
 
-#;(define-prim (@@cacosh z)
+(define-prim (@@cacosh z)
   (let ((sqrt-z-1 (@@sqrt (@@- z 1)))
         (sqrt-z+1 (@@sqrt (@@+ z 1))))
 
@@ -2220,7 +2220,7 @@ for a discussion of branch cuts.
     (@@make-rectangular (@@asinh (@@real-part (@@* (@@conjugate sqrt-z-1) sqrt-z+1)))
                         (@@* 2 (@@atan2 (@@imag-part sqrt-z-1) (@@real-part sqrt-z+1))))))
 
-#;(define-prim (@@casin z)
+(define-prim (@@casin z)
 
   ;; if (@@real-part z) is exact zero, then there is a correlation of errors in sqrt-1-z and sqrt-1+z that
   ;; allows the next substitution
@@ -2233,10 +2233,10 @@ for a discussion of branch cuts.
           (@@make-rectangular (@@atan2 x (@@real-part (@@* sqrt-1-z sqrt-1+z)))
                               (@@asinh (@@imag-part (@@* (@@conjugate sqrt-1-z) sqrt-1+z))))))))
 
-#;(define-prim (@@casinh z)
+(define-prim (@@casinh z)
   (@@* -i (@@casin (@@* +i z))))
 
-#;(define-prim (@@catanh x+iy)
+(define-prim (@@catanh x+iy)
   (define (x/x^2+y^2 x y)
     (if (@@fl< (@@flabs y) (@@flabs x))
         (@@fl/ 1. (@@fl+ x (@@fl* (@@fl/ y x) y)))
@@ -2285,7 +2285,7 @@ for a discussion of branch cuts.
                                                 2.0))))))
     (@@* beta (@@conjugate zeta))))
 
-#;(define-prim (@@ctanh xi+ieta)
+(define-prim (@@ctanh xi+ieta)
   ;; we assume that neither xi nor eta can be exact 0
   (let* ((xi  (macro-cpxnum-real xi+ieta))
          (eta (macro-cpxnum-imag xi+ieta)))
@@ -2306,12 +2306,12 @@ for a discussion of branch cuts.
                                    (@@fl/ t
                                           one+beta*s^2))))))))
 
-#;(define-prim (@@ctan zeta)
+(define-prim (@@ctan zeta)
   (@@* -i (@@ctanh (@@* +i zeta))))
 
 ;;; End of Kahan's functions
 
-#;(define-prim (@@conjugate x)
+(define-prim (@@conjugate x)
 
   (define (type-error)
     (@@fail-check-number 1 conjugate x))
@@ -2320,11 +2320,11 @@ for a discussion of branch cuts.
     x x x x (macro-cpxnum-make (macro-cpxnum-real x)
                                (@@negate (macro-cpxnum-imag x)))))
 
-#;(define-prim (conjugate x)
+(define-prim (conjugate x)
   (macro-force-vars (x)
     (@@conjugate x)))
 
-#;(define-prim (@@exp x)
+(define-prim (@@exp x)
 
   (define (type-error)
     (@@fail-check-number 1 exp x))
@@ -2339,16 +2339,16 @@ for a discussion of branch cuts.
     (@@make-polar (@@exp (macro-cpxnum-real x))
                   (macro-cpxnum-imag x))))
 
-#;(define-prim (exp x)
+(define-prim (exp x)
   (macro-force-vars (x)
     (@@exp x)))
 
-#;(define-prim (@@flonum-full-precision? x)
+(define-prim (@@flonum-full-precision? x)
   (let ((y (@@flabs x)))
     (and (@@fl< y (macro-inexact-+inf))
          (@@fl<= (macro-flonum-min-normal) y))))
 
-#;(define-prim (@@log x)
+(define-prim (@@log x)
 
   (define (type-error)
     (@@fail-check-number 1 log x))
@@ -2472,11 +2472,11 @@ for a discussion of branch cuts.
         (negative-log x))
     (@@make-rectangular (complex-log-magnitude x) (@@angle x))))
 
-#;(define-prim (log x)
+(define-prim (log x)
   (macro-force-vars (x)
     (@@log x)))
 
-#;(define-prim (@@sin x)
+(define-prim (@@sin x)
 
   (define (type-error)
     (@@fail-check-number 1 sin x))
@@ -2498,11 +2498,11 @@ for a discussion of branch cuts.
           (@@make-rectangular (@@* (@@sin real) (@@cosh imag))
                               (@@* (@@cos real) (@@sinh imag)))))))
 
-#;(define-prim (sin x)
+(define-prim (sin x)
   (macro-force-vars (x)
     (@@sin x)))
 
-#;(define-prim (@@cos x)
+(define-prim (@@cos x)
 
   (define (type-error)
     (@@fail-check-number 1 cos x))
@@ -2524,11 +2524,11 @@ for a discussion of branch cuts.
           (@@make-rectangular           (@@* (@@cos real) (@@cosh imag))
                               (@@negate (@@* (@@sin real) (@@sinh imag))))))))
 
-#;(define-prim (cos x)
+(define-prim (cos x)
   (macro-force-vars (x)
     (@@cos x)))
 
-#;(define-prim (@@tan x)
+(define-prim (@@tan x)
 
   (define (type-error)
     (@@fail-check-number 1 tan x))
@@ -2543,11 +2543,11 @@ for a discussion of branch cuts.
     ;; complex @@tanh is the basic one here.
     (@@* -i (@@tanh (@@* +i x)))))
 
-#;(define-prim (tan x)
+(define-prim (tan x)
   (macro-force-vars (x)
     (@@tan x)))
 
-#;(define-prim (@@asin x)
+(define-prim (@@asin x)
 
   (define (type-error)
     (@@fail-check-number 1 asin x))
@@ -2567,11 +2567,11 @@ for a discussion of branch cuts.
     (real-case x)
     (@@casin x)))
 
-#;(define-prim (asin x)
+(define-prim (asin x)
   (macro-force-vars (x)
     (@@asin x)))
 
-#;(define-prim (@@acos x)
+(define-prim (@@acos x)
 
   (define (type-error)
     (@@fail-check-number 1 acos x))
@@ -2591,11 +2591,11 @@ for a discussion of branch cuts.
     (real-case x)
     (@@cacos x)))
 
-#;(define-prim (acos x)
+(define-prim (acos x)
   (macro-force-vars (x)
     (@@acos x)))
 
-#;(define-prim (@@atan x)
+(define-prim (@@atan x)
 
   (define (type-error)
     (@@fail-check-number 1 atan x))
@@ -2618,7 +2618,7 @@ for a discussion of branch cuts.
           (range-error)
           (@@* -i (@@atanh (@@* +i x)))))))
 
-#;(define-prim (@@atan2 y x)
+(define-prim (@@atan2 y x)
   (cond ((or (and (@@flonum? x) (@@flnan? x))
              (and (@@flonum? y) (@@flnan? y)))
          +nan.0)
@@ -2657,7 +2657,7 @@ for a discussion of branch cuts.
                  (@@flatan (@@exact->inexact (@@* normalizer exact-y))
                            (@@exact->inexact (@@* normalizer exact-x)))))))))
 
-#;(define-prim (atan x  (y (macro-absent-obj)))
+(define-prim (atan x  (y (macro-absent-obj)))
   (macro-force-vars (x)
     (if (@@eq? y (macro-absent-obj))
         (@@atan x)
@@ -2671,7 +2671,7 @@ for a discussion of branch cuts.
 
 ;;; Hyperbolic functions
 
-#;(define-prim (@@sinh x)
+(define-prim (@@sinh x)
 
   (define (type-error)
     (@@fail-check-number 1 sinh x))
@@ -2692,11 +2692,11 @@ for a discussion of branch cuts.
           (macro-cpxnum-make (@@* (@@sinh real) (@@cos imag))
                              (@@* (@@cosh real) (@@sin imag)))))))
 
-#;(define-prim (sinh x)
+(define-prim (sinh x)
   (macro-force-vars (x)
     (@@sinh x)))
 
-#;(define-prim (@@cosh x)
+(define-prim (@@cosh x)
 
   (define (type-error)
     (@@fail-check-number 1 cosh x))
@@ -2717,11 +2717,11 @@ for a discussion of branch cuts.
           (macro-cpxnum-make (@@* (@@cosh real) (@@cos imag))
                              (@@* (@@sinh real) (@@sin imag)))))))
 
-#;(define-prim (cosh x)
+(define-prim (cosh x)
   (macro-force-vars (x)
     (@@cosh x)))
 
-#;(define-prim (@@tanh x)
+(define-prim (@@tanh x)
 
   (define (type-error)
     (@@fail-check-number 1 tanh x))
@@ -2741,13 +2741,13 @@ for a discussion of branch cuts.
           (macro-cpxnum-make 0 (@@tan imag))
           (@@ctanh x)))))
 
-#;(define-prim (tanh x)
+(define-prim (tanh x)
   (macro-force-vars (x)
     (@@tanh x)))
 
 ;;; Inverse hyperbolic functions
 
-#;(define-prim (@@asinh x)
+(define-prim (@@asinh x)
 
   (define (type-error)
     (@@fail-check-number 1 asinh x))
@@ -2761,11 +2761,11 @@ for a discussion of branch cuts.
     (@@flasinh x)
     (@@casinh x)))
 
-#;(define-prim (asinh x)
+(define-prim (asinh x)
   (macro-force-vars (x)
     (@@asinh x)))
 
-#;(define-prim (@@acosh x)
+(define-prim (@@acosh x)
 
   (define (type-error)
     (@@fail-check-number 1 acosh x))
@@ -2784,11 +2784,11 @@ for a discussion of branch cuts.
     (real-case x)
     (@@cacosh x)))
 
-#;(define-prim (acosh x)
+(define-prim (acosh x)
   (macro-force-vars (x)
     (@@acosh x)))
 
-#;(define-prim (@@atanh x)
+(define-prim (@@atanh x)
 
   (define (type-error)
     (@@fail-check-number 1 atanh x))
@@ -2820,11 +2820,11 @@ for a discussion of branch cuts.
     (real-case x)
     (@@catanh x)))
 
-#;(define-prim (atanh x)
+(define-prim (atanh x)
   (macro-force-vars (x)
     (@@atanh x)))
 
-#;(define-prim (@@sqrt x)
+(define-prim (@@sqrt x)
 
   (define (type-error)
     (@@fail-check-number 1 sqrt x))
@@ -2935,11 +2935,11 @@ for a discussion of branch cuts.
             (else
              (@@csqrt (@@exact->inexact x)))))))
 
-#;(define-prim (sqrt x)
+(define-prim (sqrt x)
   (macro-force-vars (x)
     (@@sqrt x)))
 
-#;(define-prim (@@expt x y)
+(define-prim (@@expt x y)
 
   (define (exact-int-expt x y)
 
@@ -3189,11 +3189,11 @@ for a discussion of branch cuts.
       (complex-expt x y)
       (complex-expt x y))))
 
-#;(define-prim (expt x y)
+(define-prim (expt x y)
   (macro-force-vars (x y)
     (@@expt x y)))
 
-#;(define-prim (@@make-rectangular x y)
+(define-prim (@@make-rectangular x y)
   (cond ((@@not (@@real? x))
          (@@fail-check-real 1 make-rectangular x y))
         ((@@not (@@real? y))
@@ -3205,11 +3205,11 @@ for a discussion of branch cuts.
                real
                (macro-cpxnum-make real imag))))))
 
-#;(define-prim (make-rectangular x y)
+(define-prim (make-rectangular x y)
   (macro-force-vars (x y)
     (@@make-rectangular x y)))
 
-#;(define-prim (@@make-polar x y)
+(define-prim (@@make-polar x y)
   (cond ((@@not (@@real? x))
          (@@fail-check-real 1 make-polar x y))
         ((@@not (@@real? y))
@@ -3220,11 +3220,11 @@ for a discussion of branch cuts.
            (@@make-rectangular (@@* real-x (@@cos real-y))
                                (@@* real-x (@@sin real-y)))))))
 
-#;(define-prim (make-polar x y)
+(define-prim (make-polar x y)
   (macro-force-vars (x y)
     (@@make-polar x y)))
 
-#;(define-prim (@@real-part x)
+(define-prim (@@real-part x)
 
   (define (type-error)
     (@@fail-check-number 1 real-part x))
@@ -3232,11 +3232,11 @@ for a discussion of branch cuts.
   (macro-number-dispatch x (type-error)
     x x x x (macro-cpxnum-real x)))
 
-#;(define-prim (real-part x)
+(define-prim (real-part x)
   (macro-force-vars (x)
     (@@real-part x)))
 
-#;(define-prim (@@imag-part x)
+(define-prim (@@imag-part x)
 
   (define (type-error)
     (@@fail-check-number 1 imag-part x))
@@ -3244,11 +3244,11 @@ for a discussion of branch cuts.
   (macro-number-dispatch x (type-error)
     0 0 0 0 (macro-cpxnum-imag x)))
 
-#;(define-prim (imag-part x)
+(define-prim (imag-part x)
   (macro-force-vars (x)
     (@@imag-part x)))
 
-#;(define-prim (@@magnitude x)
+(define-prim (@@magnitude x)
 
   (define (type-error)
     (@@fail-check-number 1 magnitude x))
@@ -3277,11 +3277,11 @@ for a discussion of branch cuts.
              (@@cabs (macro-cpxnum-make (@@exact->inexact real)
                                         (@@exact->inexact imag))))))))
 
-#;(define-prim (magnitude x)
+(define-prim (magnitude x)
   (macro-force-vars (x)
     (@@magnitude x)))
 
-#;(define-prim (@@angle x)
+(define-prim (@@angle x)
 
   (define (type-error)
     (@@fail-check-number 1 angle x))
@@ -3301,7 +3301,7 @@ for a discussion of branch cuts.
         (macro-inexact-+0))
     (@@atan2 (macro-cpxnum-imag x) (macro-cpxnum-real x))))
 
-#;(define-prim (angle x)
+(define-prim (angle x)
   (macro-force-vars (x)
     (@@angle x)))
 
@@ -3309,7 +3309,7 @@ for a discussion of branch cuts.
 
 ;;; exact->inexact, inexact->exact
 
-#;(define-prim (@@exact->inexact x)
+(define-prim (@@exact->inexact x)
 
   (define (type-error)
     (@@fail-check-number 1 exact->inexact x))
@@ -3322,11 +3322,11 @@ for a discussion of branch cuts.
     (@@make-rectangular (@@exact->inexact (macro-cpxnum-real x))
                         (@@exact->inexact (macro-cpxnum-imag x)))))
 
-#;(define-prim (exact->inexact x)
+(define-prim (exact->inexact x)
   (macro-force-vars (x)
     (@@exact->inexact x)))
 
-#;(define-prim (@@inexact->exact x)
+(define-prim (@@inexact->exact x)
 
   (define (type-error)
     (@@fail-check-number 1 inexact->exact x))
@@ -3349,7 +3349,7 @@ for a discussion of branch cuts.
                               (@@inexact->exact imag))
           (range-error)))))
 
-#;(define-prim (inexact->exact x)
+(define-prim (inexact->exact x)
   (macro-force-vars (x)
     (@@inexact->exact x)))
 
@@ -3357,7 +3357,7 @@ for a discussion of branch cuts.
 
 ;;; number->string, string->number
 
-#;(define-prim (@@exact-int->string x rad force-sign?)
+(define-prim (@@exact-int->string x rad force-sign?)
 
   (@@define-macro (macro-make-block-size)
     (let* ((max-rad 16)
@@ -3529,18 +3529,18 @@ for a discussion of branch cuts.
                    s)
                  (uinteger->string x rad 0))))))
 
-#;(define @@digit-to-char-table "0123456789abcdefghijklmnopqrstuvwxyz")
+(define @@digit-to-char-table "0123456789abcdefghijklmnopqrstuvwxyz")
 
-#;(define-prim (@@ratnum->string x rad force-sign?)
+(define-prim (@@ratnum->string x rad force-sign?)
   (@@string-append
    (@@exact-int->string (macro-ratnum-numerator x) rad force-sign?)
    "/"
    (@@exact-int->string (macro-ratnum-denominator x) rad #f)))
 
-#;(@@define-macro (macro-r6rs-fp-syntax) #t)
-#;(@@define-macro (macro-chez-fp-syntax) #f)
+(@@define-macro (macro-r6rs-fp-syntax) #t)
+(@@define-macro (macro-chez-fp-syntax) #f)
 
-#;(@@define-macro (macro-make-10^constants)
+(@@define-macro (macro-make-10^constants)
   (define n 326)
   (let ((v (make-vector n)))
     (let loop ((i 0) (x 1))
@@ -3550,12 +3550,12 @@ for a discussion of branch cuts.
             (loop (+ i 1) (* x 10)))))
     `',v))
 
-#;(define @@10^-constants
+(define @@10^-constants
   (if (use-fast-bignum-algorithms)
       (macro-make-10^constants)
       #f))
 
-#;(define-prim (@@flonum-printout v sign-prefix)
+(define-prim (@@flonum-printout v sign-prefix)
 
   ;; This algorithm is derived from the paper "Printing Floating-Point
   ;; Numbers Quickly and Accurately" by Robert G. Burger and R. Kent Dybvig,
@@ -3771,7 +3771,7 @@ for a discussion of branch cuts.
                             "e"
                             (@@number->string (@@fx- e 1) 10))))))
 
-#;(define-prim (@@flonum->string x rad force-sign?)
+(define-prim (@@flonum->string x rad force-sign?)
 
   (define (non-neg-num->str x rad sign-prefix)
     (if (@@flzero? x)
@@ -3803,7 +3803,7 @@ for a discussion of branch cuts.
                (else
                 (non-neg-num->str x rad ""))))))
 
-#;(define-prim (@@cpxnum->string x rad force-sign?)
+(define-prim (@@cpxnum->string x rad force-sign?)
   (let* ((real
           (macro-cpxnum-real x))
          (real-str
@@ -3818,7 +3818,7 @@ for a discussion of branch cuts.
                               (@@number->string imag rad #t)
                               "i"))))))
 
-#;(define-prim (@@number->string x  (rad 10) (force-sign? #f))
+(define-prim (@@number->string x  (rad 10) (force-sign? #f))
   (macro-number-dispatch x '()
     (@@exact-int->string x rad force-sign?)
     (@@exact-int->string x rad force-sign?)
@@ -3826,7 +3826,7 @@ for a discussion of branch cuts.
     (@@flonum->string x rad force-sign?)
     (@@cpxnum->string x rad force-sign?)))
 
-#;(define-prim (number->string n  (r (macro-absent-obj)))
+(define-prim (number->string n  (r (macro-absent-obj)))
   (macro-force-vars (n r)
     (let ((rad (if (@@eq? r (macro-absent-obj)) 10 r)))
       (if (macro-exact-int? rad)
@@ -3841,7 +3841,7 @@ for a discussion of branch cuts.
               (@@raise-range-exception 2 number->string n r))
           (@@fail-check-exact-integer 2 number->string n r)))))
 
-#;(@@define-macro (macro-make-char-to-digit-table)
+(@@define-macro (macro-make-char-to-digit-table)
   (let ((t (make-vector 128 99)))
     (vector-set! t (char->integer #\#) 0) ;; #\# counts as 0
     (let loop1 ((i 9))
@@ -3857,9 +3857,9 @@ for a discussion of branch cuts.
             (loop2 (- i 1)))))
     `',(list->u8vector (vector->list t))))
 
-#;(define @@char-to-digit-table (macro-make-char-to-digit-table))
+(define @@char-to-digit-table (macro-make-char-to-digit-table))
 
-#;(define-prim (@@string->number str  (rad 10) (check-only? #f))
+(define-prim (@@string->number str  (rad 10) (check-only? #f))
 
   ;; The number grammar parsed by this procedure is:
   ;;
@@ -4486,7 +4486,7 @@ for a discussion of branch cuts.
         (else
          #f)))
 
-#;(define-prim (string->number str  (r (macro-absent-obj)))
+(define-prim (string->number str  (r (macro-absent-obj)))
   (macro-force-vars (str r)
     (macro-check-string str 1 (string->number str r)
       (let ((rad (if (@@eq? r (macro-absent-obj)) 10 r)))
@@ -4503,7 +4503,7 @@ for a discussion of branch cuts.
 
 ;;; Bitwise operations.
 
-#;(define-prim (@@bitwise-ior x y)
+(define-prim (@@bitwise-ior x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -4549,7 +4549,7 @@ for a discussion of branch cuts.
         (else
          (type-error-on-x))))
 
-#;(define-prim-nary (bitwise-ior x y)
+(define-prim-nary (bitwise-ior x y)
   0
   (if (macro-exact-int? x) x '(1))
   (@@bitwise-ior x y)
@@ -4557,7 +4557,7 @@ for a discussion of branch cuts.
   macro-no-check
   (@@pair? @@fail-check-exact-integer))
 
-#;(define-prim (@@bitwise-xor x y)
+(define-prim (@@bitwise-xor x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -4605,7 +4605,7 @@ for a discussion of branch cuts.
         (else
          (type-error-on-x))))
 
-#;(define-prim-nary (bitwise-xor x y)
+(define-prim-nary (bitwise-xor x y)
   0
   (if (macro-exact-int? x) x '(1))
   (@@bitwise-xor x y)
@@ -4613,7 +4613,7 @@ for a discussion of branch cuts.
   macro-no-check
   (@@pair? @@fail-check-exact-integer))
 
-#;(define-prim (@@bitwise-and x y)
+(define-prim (@@bitwise-and x y)
 
   (@@define-macro (type-error-on-x) `'(1))
   (@@define-macro (type-error-on-y) `'(2))
@@ -4659,7 +4659,7 @@ for a discussion of branch cuts.
         (else
          (type-error-on-x))))
 
-#;(define-prim-nary (bitwise-and x y)
+(define-prim-nary (bitwise-and x y)
   -1
   (if (macro-exact-int? x) x '(1))
   (@@bitwise-and x y)
@@ -4667,7 +4667,7 @@ for a discussion of branch cuts.
   macro-no-check
   (@@pair? @@fail-check-exact-integer))
 
-#;(define-prim (@@bitwise-not x)
+(define-prim (@@bitwise-not x)
 
   (define (type-error)
     (@@fail-check-exact-integer 1 bitwise-not x))
@@ -4679,11 +4679,11 @@ for a discussion of branch cuts.
         (else
          (type-error))))
 
-#;(define-prim (bitwise-not x)
+(define-prim (bitwise-not x)
   (macro-force-vars (x)
     (@@bitwise-not x)))
 
-#;(define-prim (@@arithmetic-shift x y)
+(define-prim (@@arithmetic-shift x y)
 
   (define (type-error-on-x)
     (@@fail-check-exact-integer 1 arithmetic-shift x y))
@@ -4740,11 +4740,11 @@ for a discussion of branch cuts.
         (else
          (type-error-on-x))))
 
-#;(define-prim (arithmetic-shift x y)
+(define-prim (arithmetic-shift x y)
   (macro-force-vars (x y)
     (@@arithmetic-shift x y)))
 
-#;(define-prim (@@bit-count x)
+(define-prim (@@bit-count x)
 
   (define (type-error)
     (@@fail-check-exact-integer 1 bit-count x))
@@ -4764,11 +4764,11 @@ for a discussion of branch cuts.
         (else
          (type-error))))
 
-#;(define-prim (bit-count x)
+(define-prim (bit-count x)
   (macro-force-vars (x)
     (@@bit-count x)))
 
-#;(define-prim (@@integer-length x)
+(define-prim (@@integer-length x)
 
   (define (type-error)
     (@@fail-check-exact-integer 1 integer-length x))
@@ -4795,15 +4795,15 @@ for a discussion of branch cuts.
         (else
          (type-error))))
 
-#;(define-prim (integer-length x)
+(define-prim (integer-length x)
   (macro-force-vars (x)
     (@@integer-length x)))
 
-#;(define-prim (@@bitwise-merge x y z)
+(define-prim (@@bitwise-merge x y z)
   (@@bitwise-ior (@@bitwise-and (@@bitwise-not x) y)
                  (@@bitwise-and x z)))
 
-#;(define-prim (bitwise-merge x y z)
+(define-prim (bitwise-merge x y z)
   (macro-force-vars (x y z)
     (cond ((@@not (macro-exact-int? x))
            (@@fail-check-exact-integer 1 bitwise-merge x y z))
@@ -4814,7 +4814,7 @@ for a discussion of branch cuts.
           (else
            (@@bitwise-merge x y z)))))
 
-#;(define-prim (@@bit-set? x y)
+(define-prim (@@bit-set? x y)
 
   (define (type-error-on-x)
     (@@fail-check-exact-integer 1 bit-set? x y))
@@ -4858,14 +4858,14 @@ for a discussion of branch cuts.
         (else
          (type-error-on-x))))
 
-#;(define-prim (bit-set? x y)
+(define-prim (bit-set? x y)
   (macro-force-vars (x y)
     (@@bit-set? x y)))
 
-#;(define-prim (@@any-bits-set? x y)
+(define-prim (@@any-bits-set? x y)
   (@@not (@@eqv? (@@bitwise-and x y) 0)))
 
-#;(define-prim (any-bits-set? x y)
+(define-prim (any-bits-set? x y)
   (macro-force-vars (x y)
     (cond ((@@not (macro-exact-int? x))
            (@@fail-check-exact-integer 1 any-bits-set? x y))
@@ -4874,10 +4874,10 @@ for a discussion of branch cuts.
           (else
            (@@any-bits-set? x y)))))
 
-#;(define-prim (@@all-bits-set? x y)
+(define-prim (@@all-bits-set? x y)
   (@@= x (@@bitwise-and x y)))
 
-#;(define-prim (all-bits-set? x y)
+(define-prim (all-bits-set? x y)
   (macro-force-vars (x y)
     (cond ((@@not (macro-exact-int? x))
            (@@fail-check-exact-integer 1 all-bits-set? x y))
@@ -4886,7 +4886,7 @@ for a discussion of branch cuts.
           (else
            (@@all-bits-set? x y)))))
 
-#;(define-prim (@@first-bit-set x)
+(define-prim (@@first-bit-set x)
 
   (define (type-error)
     (@@fail-check-exact-integer 1 first-bit-set x))
@@ -4905,11 +4905,11 @@ for a discussion of branch cuts.
         (else
          (type-error))))
 
-#;(define-prim (first-bit-set x)
+(define-prim (first-bit-set x)
   (macro-force-vars (x)
     (@@first-bit-set x)))
 
-#;(define-prim (@@extract-bit-field size position n)
+(define-prim (@@extract-bit-field size position n)
 
   ;; I've decided to be brutally simple and not optimize
   ;; for special cases, fixnums, etc.
@@ -4939,7 +4939,7 @@ for a discussion of branch cuts.
               (@@fxnot (@@fxarithmetic-shift-left -1 size-bits)))))
         (@@bignum.normalize! result)))))
 
-#;(define-prim (extract-bit-field size position n)
+(define-prim (extract-bit-field size position n)
   (macro-force-vars (size position n)
     (macro-check-index
       size
@@ -4953,11 +4953,11 @@ for a discussion of branch cuts.
             (@@fail-check-exact-integer 3 extract-bit-field size position n)
             (@@extract-bit-field size position n))))))
 
-#;(define-prim (@@test-bit-field? size position n)
+(define-prim (@@test-bit-field? size position n)
   (@@not (@@eqv? (@@extract-bit-field size position n)
                  0)))
 
-#;(define-prim (test-bit-field? size position n)
+(define-prim (test-bit-field? size position n)
   (macro-force-vars (size position n)
     (macro-check-index
       size
@@ -4971,10 +4971,10 @@ for a discussion of branch cuts.
             (@@fail-check-exact-integer 3 test-bit-field? size position n)
             (@@test-bit-field? size position n))))))
 
-#;(define-prim (@@clear-bit-field size position n)
+(define-prim (@@clear-bit-field size position n)
   (@@replace-bit-field size position 0 n))
 
-#;(define-prim (clear-bit-field size position n)
+(define-prim (clear-bit-field size position n)
   (macro-force-vars (size position n)
     (macro-check-index
       size
@@ -4988,13 +4988,13 @@ for a discussion of branch cuts.
             (@@fail-check-exact-integer 3 clear-bit-field size position n)
             (@@clear-bit-field size position n))))))
 
-#;(define-prim (@@replace-bit-field size position newfield n)
+(define-prim (@@replace-bit-field size position newfield n)
   (let ((m (@@bit-mask size)))
     (@@bitwise-ior
      (@@bitwise-and n (@@bitwise-not (@@arithmetic-shift m position)))
      (@@arithmetic-shift (@@bitwise-and newfield m) position))))
 
-#;(define-prim (replace-bit-field size position newfield n)
+(define-prim (replace-bit-field size position newfield n)
   (macro-force-vars (size position newfield n)
     (macro-check-index
       size
@@ -5011,13 +5011,13 @@ for a discussion of branch cuts.
               (else
                (@@replace-bit-field size position newfield n)))))))
 
-#;(define-prim (@@copy-bit-field size position from to)
+(define-prim (@@copy-bit-field size position from to)
   (@@bitwise-merge
    (@@arithmetic-shift (@@bit-mask size) position)
    to
    from))
 
-#;(define-prim (copy-bit-field size position from to)
+(define-prim (copy-bit-field size position from to)
   (macro-force-vars (size position from to)
     (macro-check-index
       size
@@ -5034,7 +5034,7 @@ for a discussion of branch cuts.
               (else
                (@@copy-bit-field size position from to)))))))
 
-#;(define-prim (@@bit-mask size)
+(define-prim (@@bit-mask size)
   (@@bitwise-not (@@arithmetic-shift -1 size)))
 
 ;;;----------------------------------------------------------------------------
@@ -5042,7 +5042,7 @@ for a discussion of branch cuts.
 ;;; Fixnum operations
 ;;; -----------------
 
-#;(@@define-macro (define-prim-fixnum form . special-body)
+(@@define-macro (define-prim-fixnum form . special-body)
   (let ((body (if (null? special-body) form `(begin ,@special-body))))
     (cond ((= 1 (length (cdr form)))
            (let* ((name-fn (car form))
@@ -5072,155 +5072,155 @@ for a discussion of branch cuts.
           (else
            (error "define-prim-fixnum supports only 1 or 2 parameter procedures")))))
 
-#;(define-prim (fixnum? obj)
+(define-prim (fixnum? obj)
   (macro-force-vars (obj)
     (@@fixnum? obj)))
 
-#;(define-prim-nary-bool (@@fx= x y)
+(define-prim-nary-bool (@@fx= x y)
   #t
   #t
   (@@fx= x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fx= x y)
+(define-prim-nary-bool (fx= x y)
   #t
   #t
   (@@fx= x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary-bool (@@fx< x y)
+(define-prim-nary-bool (@@fx< x y)
   #t
   #t
   (@@fx< x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fx< x y)
+(define-prim-nary-bool (fx< x y)
   #t
   #t
   (@@fx< x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary-bool (@@fx> x y)
+(define-prim-nary-bool (@@fx> x y)
   #t
   #t
   (@@fx> x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fx> x y)
+(define-prim-nary-bool (fx> x y)
   #t
   #t
   (@@fx> x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary-bool (@@fx<= x y)
+(define-prim-nary-bool (@@fx<= x y)
   #t
   #t
   (@@fx<= x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fx<= x y)
+(define-prim-nary-bool (fx<= x y)
   #t
   #t
   (@@fx<= x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary-bool (@@fx>= x y)
+(define-prim-nary-bool (@@fx>= x y)
   #t
   #t
   (@@fx>= x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fx>= x y)
+(define-prim-nary-bool (fx>= x y)
   #t
   #t
   (@@fx>= x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim (@@fxzero? x))
+(define-prim (@@fxzero? x))
 
-#;(define-prim-fixnum (fxzero? x)
+(define-prim-fixnum (fxzero? x)
   (@@fxzero? x))
 
-#;(define-prim (@@fxpositive? x))
+(define-prim (@@fxpositive? x))
 
-#;(define-prim-fixnum (fxpositive? x)
+(define-prim-fixnum (fxpositive? x)
   (@@fxpositive? x))
 
-#;(define-prim (@@fxnegative? x))
+(define-prim (@@fxnegative? x))
 
-#;(define-prim-fixnum (fxnegative? x)
+(define-prim-fixnum (fxnegative? x)
   (@@fxnegative? x))
 
-#;(define-prim (@@fxodd? x))
+(define-prim (@@fxodd? x))
 
-#;(define-prim-fixnum (fxodd? x)
+(define-prim-fixnum (fxodd? x)
   (@@fxodd? x))
 
-#;(define-prim (@@fxeven? x))
+(define-prim (@@fxeven? x))
 
-#;(define-prim-fixnum (fxeven? x)
+(define-prim-fixnum (fxeven? x)
   (@@fxeven? x))
 
-#;(define-prim-nary (@@fxmax x y)
+(define-prim-nary (@@fxmax x y)
   ()
   x
   (@@fxmax x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fxmax x y)
+(define-prim-nary (fxmax x y)
   ()
   x
   (@@fxmax x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary (@@fxmin x y)
+(define-prim-nary (@@fxmin x y)
   ()
   x
   (@@fxmin x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fxmin x y)
+(define-prim-nary (fxmin x y)
   ()
   x
   (@@fxmin x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary (@@fxwrap+ x y)
+(define-prim-nary (@@fxwrap+ x y)
   0
   x
   (@@fxwrap+ x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fxwrap+ x y)
+(define-prim-nary (fxwrap+ x y)
   0
   x
   (@@fxwrap+ x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary (@@fx+ x y)
+(define-prim-nary (@@fx+ x y)
   0
   x
   (@@fx+ x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fx+ x y)
+(define-prim-nary (fx+ x y)
   0
   x
   (@@fx+? x y)
@@ -5228,30 +5228,30 @@ for a discussion of branch cuts.
   macro-check-fixnum
   (@@not @@raise-fixnum-overflow-exception))
 
-#;(define-prim (@@fx+? x y))
+(define-prim (@@fx+? x y))
 
-#;(define-prim-nary (@@fxwrap* x y)
+(define-prim-nary (@@fxwrap* x y)
   1
   x
   (@@fxwrap* x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fxwrap* x y)
+(define-prim-nary (fxwrap* x y)
   1
   x
   (@@fxwrap* x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary (@@fx* x y)
+(define-prim-nary (@@fx* x y)
   1
   x
   (@@fx* x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fx* x y)
+(define-prim-nary (fx* x y)
   1
   x
   ((lambda (x y)
@@ -5267,30 +5267,30 @@ for a discussion of branch cuts.
   macro-check-fixnum
   (@@not @@raise-fixnum-overflow-exception))
 
-#;(define-prim (@@fx*? x y))
+(define-prim (@@fx*? x y))
 
-#;(define-prim-nary (@@fxwrap- x y)
+(define-prim-nary (@@fxwrap- x y)
   ()
   (@@fxwrap- x)
   (@@fxwrap- x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fxwrap- x y)
+(define-prim-nary (fxwrap- x y)
   ()
   (@@fxwrap- x)
   (@@fxwrap- x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary (@@fx- x y)
+(define-prim-nary (@@fx- x y)
   ()
   (@@fx- x)
   (@@fx- x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fx- x y)
+(define-prim-nary (fx- x y)
   ()
   (@@fx-? x)
   (@@fx-? x y)
@@ -5298,21 +5298,21 @@ for a discussion of branch cuts.
   macro-check-fixnum
   (@@not @@raise-fixnum-overflow-exception))
 
-#;(define-prim (@@fx-? x  (y (macro-absent-obj)))
+(define-prim (@@fx-? x  (y (macro-absent-obj)))
   (if (@@eq? y (macro-absent-obj))
       (@@fx-? x)
       (@@fx-? x y)))
 
-#;(define-prim (@@fxwrapquotient x y))
+(define-prim (@@fxwrapquotient x y))
 
-#;(define-prim-fixnum (fxwrapquotient x y)
+(define-prim-fixnum (fxwrapquotient x y)
   (if (@@fx= y 0)
       (@@raise-divide-by-zero-exception fxwrapquotient x y)
       (@@fxwrapquotient x y)))
 
-#;(define-prim (@@fxquotient x y))
+(define-prim (@@fxquotient x y))
 
-#;(define-prim-fixnum (fxquotient x y)
+(define-prim-fixnum (fxquotient x y)
   (if (@@fx= y 0)
       (@@raise-divide-by-zero-exception fxquotient x y)
       (if (@@fx= y -1)
@@ -5320,71 +5320,71 @@ for a discussion of branch cuts.
               (@@raise-fixnum-overflow-exception fxquotient x y))
           (@@fxquotient x y))))
 
-#;(define-prim (@@fxremainder x y))
+(define-prim (@@fxremainder x y))
 
-#;(define-prim-fixnum (fxremainder x y)
+(define-prim-fixnum (fxremainder x y)
   (if (@@fx= y 0)
       (@@raise-divide-by-zero-exception fxremainder x y)
       (@@fxremainder x y)))
 
-#;(define-prim (@@fxmodulo x y))
+(define-prim (@@fxmodulo x y))
 
-#;(define-prim-fixnum (fxmodulo x y)
+(define-prim-fixnum (fxmodulo x y)
   (if (@@fx= y 0)
       (@@raise-divide-by-zero-exception fxmodulo x y)
       (@@fxmodulo x y)))
 
-#;(define-prim (@@fxnot x)
+(define-prim (@@fxnot x)
   (@@fx- -1 x))
 
-#;(define-prim-fixnum (fxnot x)
+(define-prim-fixnum (fxnot x)
   (@@fxnot x))
 
-#;(define-prim-nary (@@fxand x y)
+(define-prim-nary (@@fxand x y)
   -1
   x
   (@@fxand x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fxand x y)
+(define-prim-nary (fxand x y)
   -1
   x
   (@@fxand x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary (@@fxior x y)
+(define-prim-nary (@@fxior x y)
   0
   x
   (@@fxior x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fxior x y)
+(define-prim-nary (fxior x y)
   0
   x
   (@@fxior x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim-nary (@@fxxor x y)
+(define-prim-nary (@@fxxor x y)
   0
   x
   (@@fxxor x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fxxor x y)
+(define-prim-nary (fxxor x y)
   0
   x
   (@@fxxor x y)
   macro-force-vars
   macro-check-fixnum)
 
-#;(define-prim (@@fxif x y z))
+(define-prim (@@fxif x y z))
 
-#;(define-prim (fxif x y z)
+(define-prim (fxif x y z)
   (macro-force-vars (x y z)
     (macro-check-fixnum
       x
@@ -5400,9 +5400,9 @@ for a discussion of branch cuts.
           (fxif x y z)
           (@@fxif x y z))))))
 
-#;(define-prim (@@fxbit-count x))
+(define-prim (@@fxbit-count x))
 
-#;(define-prim (fxbit-count x)
+(define-prim (fxbit-count x)
   (macro-force-vars (x)
     (macro-check-fixnum
       x
@@ -5410,9 +5410,9 @@ for a discussion of branch cuts.
       (fxbit-count x)
       (@@fxbit-count x))))
 
-#;(define-prim (@@fxlength x))
+(define-prim (@@fxlength x))
 
-#;(define-prim (fxlength x)
+(define-prim (fxlength x)
   (macro-force-vars (x)
     (macro-check-fixnum
       x
@@ -5420,9 +5420,9 @@ for a discussion of branch cuts.
       (fxlength x)
       (@@fxlength x))))
 
-#;(define-prim (@@fxfirst-bit-set x))
+(define-prim (@@fxfirst-bit-set x))
 
-#;(define-prim (fxfirst-bit-set x)
+(define-prim (fxfirst-bit-set x)
   (macro-force-vars (x)
     (macro-check-fixnum
       x
@@ -5430,9 +5430,9 @@ for a discussion of branch cuts.
       (fxfirst-bit-set x)
       (@@fxfirst-bit-set x))))
 
-#;(define-prim (@@fxbit-set? x y))
+(define-prim (@@fxbit-set? x y))
 
-#;(define-prim (fxbit-set? x y)
+(define-prim (fxbit-set? x y)
   (macro-force-vars (x y)
     (macro-check-fixnum-range-incl
       x
@@ -5446,9 +5446,9 @@ for a discussion of branch cuts.
         (fxbit-set? x y)
         (@@fxbit-set? x y)))))
 
-#;(define-prim (@@fxwraparithmetic-shift x y))
+(define-prim (@@fxwraparithmetic-shift x y))
 
-#;(define-prim (fxwraparithmetic-shift x y)
+(define-prim (fxwraparithmetic-shift x y)
   (macro-force-vars (x y)
     (macro-check-fixnum
       x
@@ -5462,17 +5462,17 @@ for a discussion of branch cuts.
         (fxwraparithmetic-shift x y)
         (@@fxwraparithmetic-shift x y)))))
 
-#;(define-prim (@@fxarithmetic-shift x y))
+(define-prim (@@fxarithmetic-shift x y))
 
-#;(define-prim-fixnum (fxarithmetic-shift x y)
+(define-prim-fixnum (fxarithmetic-shift x y)
   (or (@@fxarithmetic-shift? x y)
       (@@raise-fixnum-overflow-exception fxarithmetic-shift x y)))
 
-#;(define-prim (@@fxarithmetic-shift? x y))
+(define-prim (@@fxarithmetic-shift? x y))
 
-#;(define-prim (@@fxwraparithmetic-shift-left x y))
+(define-prim (@@fxwraparithmetic-shift-left x y))
 
-#;(define-prim (fxwraparithmetic-shift-left x y)
+(define-prim (fxwraparithmetic-shift-left x y)
   (macro-force-vars (x y)
     (macro-check-fixnum
       x
@@ -5486,60 +5486,60 @@ for a discussion of branch cuts.
         (fxwraparithmetic-shift-left x y)
         (@@fxwraparithmetic-shift-left x y)))))
 
-#;(define-prim (@@fxarithmetic-shift-left x y))
+(define-prim (@@fxarithmetic-shift-left x y))
 
-#;(define-prim-fixnum (fxarithmetic-shift-left x y)
+(define-prim-fixnum (fxarithmetic-shift-left x y)
   (or (@@fxarithmetic-shift-left? x y)
       (if (@@fx< y 0)
           (@@raise-range-exception 2 fxarithmetic-shift-left x y)
           (@@raise-fixnum-overflow-exception fxarithmetic-shift-left x y))))
 
-#;(define-prim (@@fxarithmetic-shift-left? x y))
+(define-prim (@@fxarithmetic-shift-left? x y))
 
-#;(define-prim (@@fxarithmetic-shift-right x y))
+(define-prim (@@fxarithmetic-shift-right x y))
 
-#;(define-prim-fixnum (fxarithmetic-shift-right x y)
+(define-prim-fixnum (fxarithmetic-shift-right x y)
   (or (@@fxarithmetic-shift-right? x y)
       (@@raise-range-exception 2 fxarithmetic-shift-right x y)))
 
-#;(define-prim (@@fxarithmetic-shift-right? x y))
+(define-prim (@@fxarithmetic-shift-right? x y))
 
-#;(define-prim (@@fxwraplogical-shift-right x y))
+(define-prim (@@fxwraplogical-shift-right x y))
 
-#;(define-prim-fixnum (fxwraplogical-shift-right x y)
+(define-prim-fixnum (fxwraplogical-shift-right x y)
   (or (@@fxwraplogical-shift-right? x y)
       (@@raise-range-exception 2 fxwraplogical-shift-right x y)))
 
-#;(define-prim (@@fxwraplogical-shift-right? x y))
+(define-prim (@@fxwraplogical-shift-right? x y))
 
-#;(define-prim (@@fxwrapabs x))
+(define-prim (@@fxwrapabs x))
 
-#;(define-prim-fixnum (fxwrapabs x)
+(define-prim-fixnum (fxwrapabs x)
   (@@fxwrapabs x))
 
-#;(define-prim (@@fxabs x))
+(define-prim (@@fxabs x))
 
-#;(define-prim-fixnum (fxabs x)
+(define-prim-fixnum (fxabs x)
   (or (@@fxabs? x)
       (@@raise-fixnum-overflow-exception fxabs x)))
 
-#;(define-prim (@@fxabs? x))
+(define-prim (@@fxabs? x))
 
-#;(define-prim (@@fxwrapsquare x))
+(define-prim (@@fxwrapsquare x))
 
-#;(define-prim-fixnum (fxwrapsquare x)
+(define-prim-fixnum (fxwrapsquare x)
   (@@fxwrapsquare x))
 
-#;(define-prim (@@fxsquare x))
+(define-prim (@@fxsquare x))
 
-#;(define-prim-fixnum (fxsquare x)
+(define-prim-fixnum (fxsquare x)
   (or (@@fxsquare? x)
       (@@raise-fixnum-overflow-exception fxsquare x)))
 
-#;(define-prim (@@fxsquare? x))
+(define-prim (@@fxsquare? x))
 
-#;(define-prim (@@integer->char x))
-#;(define-prim (@@char->integer x))
+(define-prim (@@integer->char x))
+(define-prim (@@char->integer x))
 
 ;;;----------------------------------------------------------------------------
 
@@ -5559,36 +5559,36 @@ for a discussion of branch cuts.
 
 ;;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#;(define-prim (@@bignum.negative? x))
-#;(define-prim (@@bignum.adigit-length x))
-#;(define-prim (@@bignum.adigit-inc! x i))
-#;(define-prim (@@bignum.adigit-dec! x i))
-#;(define-prim (@@bignum.adigit-add! x i y j carry))
-#;(define-prim (@@bignum.adigit-sub! x i y j borrow))
-#;(define-prim (@@bignum.mdigit-length x))
-#;(define-prim (@@bignum.mdigit-ref x i))
-#;(define-prim (@@bignum.mdigit-set! x i mdigit))
-#;(define-prim (@@bignum.mdigit-mul! x i y j multiplier carry))
-#;(define-prim (@@bignum.mdigit-div! x i y j quotient borrow))
-#;(define-prim (@@bignum.mdigit-quotient u j v_n-1))
-#;(define-prim (@@bignum.mdigit-remainder u j v_n-1 q-hat))
-#;(define-prim (@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2))
+(define-prim (@@bignum.negative? x))
+(define-prim (@@bignum.adigit-length x))
+(define-prim (@@bignum.adigit-inc! x i))
+(define-prim (@@bignum.adigit-dec! x i))
+(define-prim (@@bignum.adigit-add! x i y j carry))
+(define-prim (@@bignum.adigit-sub! x i y j borrow))
+(define-prim (@@bignum.mdigit-length x))
+(define-prim (@@bignum.mdigit-ref x i))
+(define-prim (@@bignum.mdigit-set! x i mdigit))
+(define-prim (@@bignum.mdigit-mul! x i y j multiplier carry))
+(define-prim (@@bignum.mdigit-div! x i y j quotient borrow))
+(define-prim (@@bignum.mdigit-quotient u j v_n-1))
+(define-prim (@@bignum.mdigit-remainder u j v_n-1 q-hat))
+(define-prim (@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2))
 
-#;(define-prim (@@bignum.adigit-ones? x i))
-#;(define-prim (@@bignum.adigit-zero? x i))
-#;(define-prim (@@bignum.adigit-negative? x i))
-#;(define-prim (@@bignum.adigit-= x y i))
-#;(define-prim (@@bignum.adigit-< x y i))
-#;(define-prim (@@fixnum->bignum x))
-#;(define-prim (@@bignum.adigit-shrink! x n))
-#;(define-prim (@@bignum.adigit-copy! x i y j))
-#;(define-prim (@@bignum.adigit-cat! x i hi j lo k divider))
-#;(define-prim (@@bignum.adigit-bitwise-and! x i y j))
-#;(define-prim (@@bignum.adigit-bitwise-ior! x i y j))
-#;(define-prim (@@bignum.adigit-bitwise-xor! x i y j))
-#;(define-prim (@@bignum.adigit-bitwise-not! x i))
+(define-prim (@@bignum.adigit-ones? x i))
+(define-prim (@@bignum.adigit-zero? x i))
+(define-prim (@@bignum.adigit-negative? x i))
+(define-prim (@@bignum.adigit-= x y i))
+(define-prim (@@bignum.adigit-< x y i))
+(define-prim (@@fixnum->bignum x))
+(define-prim (@@bignum.adigit-shrink! x n))
+(define-prim (@@bignum.adigit-copy! x i y j))
+(define-prim (@@bignum.adigit-cat! x i hi j lo k divider))
+(define-prim (@@bignum.adigit-bitwise-and! x i y j))
+(define-prim (@@bignum.adigit-bitwise-ior! x i y j))
+(define-prim (@@bignum.adigit-bitwise-xor! x i y j))
+(define-prim (@@bignum.adigit-bitwise-not! x i))
 
-#;(macro-case-target
+(macro-case-target
  ((C)
   (define-prim (@@bignum.fdigit-length x))
   (define-prim (@@bignum.fdigit-ref x i))
@@ -5600,33 +5600,33 @@ for a discussion of branch cuts.
 
 ;;(define @@bignum.adigit-ones #xffffffffffffffff)
 ;;(define @@bignum.adigit-zeros #x10000000000000000)
-#;(define @@bignum.adigit-ones (@@fixnum->bignum -1))
-#;(define @@bignum.adigit-zeros (@@fixnum->bignum 0))
+(define @@bignum.adigit-ones (@@fixnum->bignum -1))
+(define @@bignum.adigit-zeros (@@fixnum->bignum 0))
 
-#;(macro-case-target
+(macro-case-target
  ((C)
   (define @@bignum.fdigit-base
     (@@fxarithmetic-shift-left 1 @@bignum.fdigit-width))))
 
-#;(define @@bignum.mdigit-base
+(define @@bignum.mdigit-base
   (@@fxarithmetic-shift-left 1 @@bignum.mdigit-width))
 
-#;(define @@bignum.inexact-mdigit-base
+(define @@bignum.inexact-mdigit-base
   (@@fixnum->flonum @@bignum.mdigit-base))
 
-#;(define @@bignum.mdigit-base-minus-1
+(define @@bignum.mdigit-base-minus-1
   (@@fx- @@bignum.mdigit-base 1))
 
-#;(define @@bignum.minus-mdigit-base
+(define @@bignum.minus-mdigit-base
   (@@fx- @@bignum.mdigit-base))
 
-#;(define @@bignum.max-fixnum-div-mdigit-base
+(define @@bignum.max-fixnum-div-mdigit-base
   (@@fxquotient @@max-fixnum @@bignum.mdigit-base))
 
-#;(define @@bignum.min-fixnum-div-mdigit-base
+(define @@bignum.min-fixnum-div-mdigit-base
   (@@fxquotient @@min-fixnum @@bignum.mdigit-base))
 
-#;(define @@bignum.2*min-fixnum
+(define @@bignum.2*min-fixnum
   (if (@@fixnum? -1073741824)
       -4611686018427387904 ;; (- (expt 2 62))
       -1073741824))        ;; (- (expt 2 30))
@@ -5634,27 +5634,27 @@ for a discussion of branch cuts.
 ;;; The following global variables control when each of the three
 ;;; multiplication algorithms are used.
 
-#;(define @@bignum.naive-mul-max-width 1400)
-#;(set! @@bignum.naive-mul-max-width @@bignum.naive-mul-max-width)
+(define @@bignum.naive-mul-max-width 1400)
+(set! @@bignum.naive-mul-max-width @@bignum.naive-mul-max-width)
 
-#;(define @@bignum.fft-mul-min-width 20000)
-#;(set! @@bignum.fft-mul-min-width @@bignum.fft-mul-min-width)
+(define @@bignum.fft-mul-min-width 20000)
+(set! @@bignum.fft-mul-min-width @@bignum.fft-mul-min-width)
 
-#;(define @@bignum.fft-mul-max-width
+(define @@bignum.fft-mul-max-width
   (if (@@fixnum? -1073741824) ;; to avoid creating f64vectors that are too long
       536870912
       4194304))
-#;(set! @@bignum.fft-mul-max-width @@bignum.fft-mul-max-width)
+(set! @@bignum.fft-mul-max-width @@bignum.fft-mul-max-width)
 
 
-#;(define @@bignum.fast-gcd-size @@bignum.naive-mul-max-width)  ;; must be >= 64
-#;(set! @@bignum.fast-gcd-size @@bignum.fast-gcd-size)
+(define @@bignum.fast-gcd-size @@bignum.naive-mul-max-width)  ;; must be >= 64
+(set! @@bignum.fast-gcd-size @@bignum.fast-gcd-size)
 
 ;;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ;;; Operations where arguments are in bignum format
 
-#;(define-prim (@@bignum.make k x complement?)
+(define-prim (@@bignum.make k x complement?)
   (@@declare (not interrupts-enabled))
   (let ((v (@@c-code "
 ___SIZE_TS i;
@@ -5798,12 +5798,12 @@ ___RESULT = result;
           (@@bignum.make k x complement?))
         v)))
 
-#;(define-prim (@@bignum.copy x)
+(define-prim (@@bignum.copy x)
   (@@bignum.make (@@bignum.adigit-length x) x #f))
 
 ;;; Bignum addition and subtraction.
 
-#;(define-prim (@@bignum.+ x y)
+(define-prim (@@bignum.+ x y)
 
   ;; x is an unnormalized bignum, y is an unnormalized bignum
 
@@ -5837,7 +5837,7 @@ ___RESULT = result;
         (add x x-length y y-length)
         (add y y-length x x-length))))
 
-#;(define-prim (@@bignum.- x y)
+(define-prim (@@bignum.- x y)
 
   ;; x is an unnormalized bignum, y is an unnormalized bignum
 
@@ -5891,7 +5891,7 @@ ___RESULT = result;
                  (@@not (@@bignum.negative? y))
                  (@@not (@@fxzero? borrow)))))))))
 
-#;(define-prim (@@bignum.propagate-carry-and-normalize!
+(define-prim (@@bignum.propagate-carry-and-normalize!
               result
               result-length
               i
@@ -5921,7 +5921,7 @@ ___RESULT = result;
 
       (@@bignum.normalize! result)))
 
-#;(define-prim (@@bignum->fixnum? bn)
+(define-prim (@@bignum->fixnum? bn)
   (let* ((i
           (@@fx- (@@bignum.mdigit-length bn) 1))
          (n
@@ -5943,7 +5943,7 @@ ___RESULT = result;
                         (loop n2
                               (@@fx- i 1))))))))))
 
-#;(define-prim (@@bignum.normalize! result)
+(define-prim (@@bignum.normalize! result)
 
   (@@declare (not interrupts-enabled))
 
@@ -5978,7 +5978,7 @@ ___RESULT = result;
 
 ;;; Bignum multiplication.
 
-#;(define-prim (@@bignum.* x y)
+(define-prim (@@bignum.* x y)
 
   (define (fft-mul x y)
 
@@ -9047,7 +9047,7 @@ ___RESULT = result;
                        (possibly-unnormalized-bignum-arithmetic-shift y (@@fx- y-low-bits)))
                   (@@fx+ x-low-bits y-low-bits))))))))
 
-#;(define-prim (@@bignum.arithmetic-shift x shift)
+(define-prim (@@bignum.arithmetic-shift x shift)
   (let* ((bit-shift
           (@@fxmodulo shift @@bignum.adigit-width))
          (digit-shift
@@ -9065,7 +9065,7 @@ ___RESULT = result;
           (else
            0))))
 
-#;(define-prim (@@bignum.arithmetic-shift-into! x shift result)
+(define-prim (@@bignum.arithmetic-shift-into! x shift result)
 
   #|
   Shifts x by shift bits into result.
@@ -9147,19 +9147,19 @@ ___RESULT = result;
 
 ;;; Bignum division.
 
-#;(define @@reciprocal-cache (@@make-table 0 #f #t #f @@eq?))
+(define @@reciprocal-cache (@@make-table 0 #f #t #f @@eq?))
 
-#;(define @@bignum.mdigit-width/2
+(define @@bignum.mdigit-width/2
   (@@fxquotient @@bignum.mdigit-width 2))
 
-#;(define @@bignum.mdigit-base*16
+(define @@bignum.mdigit-base*16
   (@@fx* @@bignum.mdigit-base 16))
 
-#;(define (@@fxceiling-ratio a b)
+(define (@@fxceiling-ratio a b)
   ;; computes (ceiling (/ a b)) with a b fixnums
   (@@fxquotient (@@fx+ a b -1) b))
 
-#;(define-prim (@@bignum.div u v  (need-quotient? #t) (keep-dividend? #t))
+(define-prim (@@bignum.div u v  (need-quotient? #t) (keep-dividend? #t))
 
   ;; u is an unnormalized bignum, v is a normalized exact-int
   ;; 0 < v <= u
@@ -9478,13 +9478,13 @@ ___RESULT = result;
 ;;; Exact integer operations
 ;;; ------------------------
 
-#;(define (@@exact-int.= x y)
+(define (@@exact-int.= x y)
   (@@fx= 0 (@@exact-int.compare x y)))
 
-#;(define (@@exact-int.< x y)
+(define (@@exact-int.< x y)
   (@@fx= -1 (@@exact-int.compare x y)))
 
-#;(define (@@exact-int.compare x y)
+(define (@@exact-int.compare x y)
 
   ;; returns -1 if x < y, 0 if x = y, or 1 if x > y
 
@@ -9513,12 +9513,12 @@ ___RESULT = result;
               (if (@@bignum.negative? y) (compare x y 1) -1)
               (if (@@bignum.negative? y) 1 (compare x y -1))))))
 
-#;(define-prim (@@exact-int.*-expt2 x y)
+(define-prim (@@exact-int.*-expt2 x y)
   (if (@@fxnegative? y)
       (@@ratnum.normalize x (@@arithmetic-shift 1 (@@fx- y)))
       (@@arithmetic-shift x y)))
 
-#;(define-prim (@@exact-int.div x y  (need-quotient? #t) (keep-dividend? #t))
+(define-prim (@@exact-int.div x y  (need-quotient? #t) (keep-dividend? #t))
 
   (define (big-quotient x y)
     (let* ((x-negative? (@@negative? x))
@@ -9573,7 +9573,7 @@ ___RESULT = result;
         (else
          (big-quotient x y))))
 
-#;(define-prim (@@exact-int.nth-root x y)
+(define-prim (@@exact-int.nth-root x y)
   (cond ((@@eqv? x 0)
          0)
         ((@@eqv? x 1)
@@ -9634,7 +9634,7 @@ ___RESULT = result;
                                          g
                                          (loop (@@- g 1)))))))))))))))))
 
-#;(define-prim (@@integer-nth-root x y)
+(define-prim (@@integer-nth-root x y)
 
   (define (type-error-on-x)
     (@@fail-check-exact-integer 1 integer-nth-root x y))
@@ -9659,11 +9659,11 @@ ___RESULT = result;
           (type-error-on-y))
       (type-error-on-x)))
 
-#;(define-prim (integer-nth-root x y)
+(define-prim (integer-nth-root x y)
   (macro-force-vars (x y)
     (@@integer-nth-root x y)))
 
-#;(define-prim (@@exact-int.sqrt x)
+(define-prim (@@exact-int.sqrt x)
 
   ;; Derived from the paper "Karatsuba Square Root" by Paul Zimmermann,
   ;; INRIA technical report RR-3805, 1999.  (Used in gmp 4.*)
@@ -9721,7 +9721,7 @@ ___RESULT = result;
                   (@@cons s
                           r))))))))
 
-#;(define-prim (@@integer-sqrt x)
+(define-prim (@@integer-sqrt x)
 
   (define (type-error)
     (@@fail-check-exact-integer 1 integer-sqrt x))
@@ -9735,11 +9735,11 @@ ___RESULT = result;
           (@@car (@@exact-int.sqrt x)))
       (type-error)))
 
-#;(define-prim (integer-sqrt x)
+(define-prim (integer-sqrt x)
   (macro-force-vars (x)
     (@@integer-sqrt x)))
 
-#;(define-prim (@@exact-int.square n)
+(define-prim (@@exact-int.square n)
   (@@* n n))
 
 ;;;----------------------------------------------------------------------------
@@ -9747,28 +9747,28 @@ ___RESULT = result;
 ;;; Ratnum operations
 ;;; -----------------
 
-#;(define-prim (@@ratnum-make num den)
+(define-prim (@@ratnum-make num den)
   (macro-ratnum-make num den))
 
-#;(define-prim (@@ratnum-numerator x)
+(define-prim (@@ratnum-numerator x)
   (macro-ratnum-numerator x))
 
-#;(define-prim (@@ratnum-denominator x)
+(define-prim (@@ratnum-denominator x)
   (macro-ratnum-denominator x))
 
-#;(define-prim (@@ratnum.= x y)
+(define-prim (@@ratnum.= x y)
   (and (@@= (macro-ratnum-numerator x)
             (macro-ratnum-numerator y))
        (@@= (macro-ratnum-denominator x)
             (macro-ratnum-denominator y))))
 
-#;(define-prim (@@ratnum.< x y)
+(define-prim (@@ratnum.< x y)
   (@@< (@@* (macro-ratnum-numerator x)
             (macro-ratnum-denominator y))
        (@@* (macro-ratnum-denominator x)
             (macro-ratnum-numerator y))))
 
-#;(define-prim (@@ratnum.+ x y)
+(define-prim (@@ratnum.+ x y)
   (let ((p (macro-ratnum-numerator x))
         (q (macro-ratnum-denominator x))
         (r (macro-ratnum-numerator y))
@@ -9789,7 +9789,7 @@ ___RESULT = result;
                 num
                 (macro-ratnum-make num den)))))))
 
-#;(define-prim (@@ratnum.- x y)
+(define-prim (@@ratnum.- x y)
   (let ((p (macro-ratnum-numerator x))
         (q (macro-ratnum-denominator x))
         (r (macro-ratnum-numerator y))
@@ -9810,7 +9810,7 @@ ___RESULT = result;
                 num
                 (macro-ratnum-make num den)))))))
 
-#;(define-prim (@@ratnum.* x y)
+(define-prim (@@ratnum.* x y)
   (let ((p (macro-ratnum-numerator x))
         (q (macro-ratnum-denominator x))
         (r (macro-ratnum-numerator y))
@@ -9825,7 +9825,7 @@ ___RESULT = result;
               num
               (macro-ratnum-make num den))))))
 
-#;(define-prim (@@ratnum./ x y)
+(define-prim (@@ratnum./ x y)
   (let ((p (macro-ratnum-numerator x))
         (q (macro-ratnum-denominator x))
         (r (macro-ratnum-denominator y))
@@ -9844,7 +9844,7 @@ ___RESULT = result;
                   num
                   (macro-ratnum-make num den)))))))
 
-#;(define-prim (@@ratnum.normalize num den)
+(define-prim (@@ratnum.normalize num den)
   (let* ((x (@@gcd num den))
          (y (if (@@negative? den) (@@negate x) x))
          (num (@@quotient num y))
@@ -9853,10 +9853,10 @@ ___RESULT = result;
         num
         (macro-ratnum-make num den))))
 
-#;(define-prim (@@exact-int->ratnum x)
+(define-prim (@@exact-int->ratnum x)
   (macro-ratnum-make x 1))
 
-#;(define-prim (@@ratnum.round x  (round-half-away-from-zero? #f))
+(define-prim (@@ratnum.round x  (round-half-away-from-zero? #f))
   (let ((num (macro-ratnum-numerator x))
         (den (macro-ratnum-denominator x)))
     (if (@@eqv? den 2)
@@ -9874,7 +9874,7 @@ ___RESULT = result;
 ;;; Flonum operations
 ;;; -----------------
 
-#;(@@define-macro (define-prim-flonum form . special-body)
+(@@define-macro (define-prim-flonum form . special-body)
   (let ((body (if (null? special-body) form `(begin ,@special-body))))
     (cond ((= 1 (length (cdr form)))
            (let* ((name-fn (car form))
@@ -9904,217 +9904,217 @@ ___RESULT = result;
           (else
            (error "define-prim-flonum supports only 1 or 2 parameter procedures")))))
 
-#;(define-prim (flonum? obj)
+(define-prim (flonum? obj)
   (macro-force-vars (obj)
     (@@flonum? obj)))
 
-#;(define-prim (@@fleqv? x y))
+(define-prim (@@fleqv? x y))
 
-#;(define-prim-nary-bool (@@fl= x y)
+(define-prim-nary-bool (@@fl= x y)
   #t
   #t
   (@@fl= x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fl= x y)
+(define-prim-nary-bool (fl= x y)
   #t
   #t
   (@@fl= x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim-nary-bool (@@fl< x y)
+(define-prim-nary-bool (@@fl< x y)
   #t
   #t
   (@@fl< x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fl< x y)
+(define-prim-nary-bool (fl< x y)
   #t
   #t
   (@@fl< x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim-nary-bool (@@fl> x y)
+(define-prim-nary-bool (@@fl> x y)
   #t
   #t
   (@@fl> x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fl> x y)
+(define-prim-nary-bool (fl> x y)
   #t
   #t
   (@@fl> x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim-nary-bool (@@fl<= x y)
+(define-prim-nary-bool (@@fl<= x y)
   #t
   #t
   (@@fl<= x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fl<= x y)
+(define-prim-nary-bool (fl<= x y)
   #t
   #t
   (@@fl<= x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim-nary-bool (@@fl>= x y)
+(define-prim-nary-bool (@@fl>= x y)
   #t
   #t
   (@@fl>= x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary-bool (fl>= x y)
+(define-prim-nary-bool (fl>= x y)
   #t
   #t
   (@@fl>= x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim (@@flinteger? x))
+(define-prim (@@flinteger? x))
 
-#;(define-prim-flonum (flinteger? x)
+(define-prim-flonum (flinteger? x)
   (@@flinteger? x))
 
-#;(define-prim (@@flzero? x))
+(define-prim (@@flzero? x))
 
-#;(define-prim-flonum (flzero? x)
+(define-prim-flonum (flzero? x)
   (@@flzero? x))
 
-#;(define-prim (@@flpositive? x))
+(define-prim (@@flpositive? x))
 
-#;(define-prim-flonum (flpositive? x)
+(define-prim-flonum (flpositive? x)
   (@@flpositive? x))
 
-#;(define-prim (@@flnegative? x))
+(define-prim (@@flnegative? x))
 
-#;(define-prim-flonum (flnegative? x)
+(define-prim-flonum (flnegative? x)
   (@@flnegative? x))
 
-#;(define-prim (@@flodd? x))
+(define-prim (@@flodd? x))
 
-#;(define-prim-flonum (flodd? x)
+(define-prim-flonum (flodd? x)
   (@@flodd? x))
 
-#;(define-prim (@@fleven? x))
+(define-prim (@@fleven? x))
 
-#;(define-prim-flonum (fleven? x)
+(define-prim-flonum (fleven? x)
   (@@fleven? x))
 
-#;(define-prim (@@flfinite? x))
+(define-prim (@@flfinite? x))
 
-#;(define-prim-flonum (flfinite? x)
+(define-prim-flonum (flfinite? x)
   (@@flfinite? x))
 
-#;(define-prim (@@flinfinite? x))
+(define-prim (@@flinfinite? x))
 
-#;(define-prim-flonum (flinfinite? x)
+(define-prim-flonum (flinfinite? x)
   (@@flinfinite? x))
 
-#;(define-prim (@@flnan? x))
+(define-prim (@@flnan? x))
 
-#;(define-prim-flonum (flnan? x)
+(define-prim-flonum (flnan? x)
   (@@flnan? x))
 
-#;(define-prim-nary (@@flmax x y)
+(define-prim-nary (@@flmax x y)
   ()
   x
   (@@flmax x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (flmax x y)
+(define-prim-nary (flmax x y)
   ()
   x
   (@@flmax x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim-nary (@@flmin x y)
+(define-prim-nary (@@flmin x y)
   ()
   x
   (@@flmin x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (flmin x y)
+(define-prim-nary (flmin x y)
   ()
   x
   (@@flmin x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim-nary (@@fl+ x y)
+(define-prim-nary (@@fl+ x y)
   (macro-inexact-+0)
   x
   (@@fl+ x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fl+ x y)
+(define-prim-nary (fl+ x y)
   (macro-inexact-+0)
   x
   (@@fl+ x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim-nary (@@fl* x y)
+(define-prim-nary (@@fl* x y)
   (macro-inexact-+1)
   x
   (@@fl* x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fl* x y)
+(define-prim-nary (fl* x y)
   (macro-inexact-+1)
   x
   (@@fl* x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim-nary (@@fl- x y)
+(define-prim-nary (@@fl- x y)
   ()
   (@@fl- x)
   (@@fl- x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fl- x y)
+(define-prim-nary (fl- x y)
   ()
   (@@fl- x)
   (@@fl- x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim-nary (@@fl/ x y)
+(define-prim-nary (@@fl/ x y)
   ()
   (@@fl/ x)
   (@@fl/ x y)
   macro-no-force
   macro-no-check)
 
-#;(define-prim-nary (fl/ x y)
+(define-prim-nary (fl/ x y)
   ()
   (@@fl/ x)
   (@@fl/ x y)
   macro-force-vars
   macro-check-flonum)
 
-#;(define-prim (@@flabs x))
+(define-prim (@@flabs x))
 
-#;(define-prim-flonum (flabs x)
+(define-prim-flonum (flabs x)
   (@@flabs x))
 
-#;(define-prim-flonum (flnumerator x)
+(define-prim-flonum (flnumerator x)
   (cond ((@@flzero? x)
          x)
         ((macro-flonum-rational? x)
@@ -10122,95 +10122,95 @@ ___RESULT = result;
         (else
          (@@fail-check-rational 1 flnumerator x))))
 
-#;(define-prim-flonum (fldenominator x)
+(define-prim-flonum (fldenominator x)
   (if (macro-flonum-rational? x)
       (@@exact->inexact (@@denominator (@@flonum->exact x)))
       (@@fail-check-rational 1 fldenominator x)))
 
-#;(define-prim (@@flfloor x))
+(define-prim (@@flfloor x))
 
-#;(define-prim-flonum (flfloor x)
+(define-prim-flonum (flfloor x)
   (@@flfloor x))
 
-#;(define-prim (@@flceiling x))
+(define-prim (@@flceiling x))
 
-#;(define-prim-flonum (flceiling x)
+(define-prim-flonum (flceiling x)
   (@@flceiling x))
 
-#;(define-prim (@@fltruncate x))
+(define-prim (@@fltruncate x))
 
-#;(define-prim-flonum (fltruncate x)
+(define-prim-flonum (fltruncate x)
   (@@fltruncate x))
 
-#;(define-prim (@@flround x))
+(define-prim (@@flround x))
 
-#;(define-prim-flonum (flround x)
+(define-prim-flonum (flround x)
   (@@flround x))
 
-#;(define-prim (@@flscalbn x n))
+(define-prim (@@flscalbn x n))
 
-#;(define-prim (flscalbn x n)
+(define-prim (flscalbn x n)
   (macro-force-vars (x n)
     (macro-check-flonum x 1 (flscalbn x n)
       (macro-check-fixnum n 2 (flscalbn x n)
         (@@flscalbn x n)))))
 
-#;(define-prim (@@flilogb x))
+(define-prim (@@flilogb x))
 
-#;(define-prim-flonum (flilogb x)
+(define-prim-flonum (flilogb x)
   (@@flilogb x))
 
-#;(define-prim (@@flexp x))
+(define-prim (@@flexp x))
 
-#;(define-prim-flonum (flexp x)
+(define-prim-flonum (flexp x)
   (@@flexp x))
 
-#;(define-prim (@@flexpm1 x))
+(define-prim (@@flexpm1 x))
 
-#;(define-prim-flonum (flexpm1 x)
+(define-prim-flonum (flexpm1 x)
   (@@flexpm1 x))
 
-#;(define-prim (@@fllog x))
+(define-prim (@@fllog x))
 
-#;(define-prim-flonum (fllog x)
+(define-prim-flonum (fllog x)
   (@@fllog x))
 
-#;(define-prim (@@fllog1p x))
+(define-prim (@@fllog1p x))
 
-#;(define-prim-flonum (fllog1p x)
+(define-prim-flonum (fllog1p x)
   (@@fllog1p x))
 
-#;(define-prim (@@flsin x))
+(define-prim (@@flsin x))
 
-#;(define-prim-flonum (flsin x)
+(define-prim-flonum (flsin x)
   (@@flsin x))
 
-#;(define-prim (@@flcos x))
+(define-prim (@@flcos x))
 
-#;(define-prim-flonum (flcos x)
+(define-prim-flonum (flcos x)
   (@@flcos x))
 
-#;(define-prim (@@fltan x))
+(define-prim (@@fltan x))
 
-#;(define-prim-flonum (fltan x)
+(define-prim-flonum (fltan x)
   (@@fltan x))
 
-#;(define-prim (@@flasin x))
+(define-prim (@@flasin x))
 
-#;(define-prim-flonum (flasin x)
+(define-prim-flonum (flasin x)
   (@@flasin x))
 
-#;(define-prim (@@flacos x))
+(define-prim (@@flacos x))
 
-#;(define-prim-flonum (flacos x)
+(define-prim-flonum (flacos x)
   (@@flacos x))
 
-#;(define-prim (@@flatan x  (y (macro-absent-obj)))
+(define-prim (@@flatan x  (y (macro-absent-obj)))
   (if (@@eq? y (macro-absent-obj))
       (@@flatan x)
       (@@flatan x y)))
 
-#;(define-prim (flatan x  (y (macro-absent-obj)))
+(define-prim (flatan x  (y (macro-absent-obj)))
   (macro-force-vars (x y)
     (macro-check-flonum x 1 (flatan x y)
       (if (@@eq? y (macro-absent-obj))
@@ -10218,61 +10218,61 @@ ___RESULT = result;
           (macro-check-flonum y 2 (flatan x y)
             (@@flatan x y))))))
 
-#;(define-prim (@@flsinh x))
+(define-prim (@@flsinh x))
 
-#;(define-prim-flonum (flsinh x)
+(define-prim-flonum (flsinh x)
   (@@flsinh x))
 
-#;(define-prim (@@flcosh x))
+(define-prim (@@flcosh x))
 
-#;(define-prim-flonum (flcosh x)
+(define-prim-flonum (flcosh x)
   (@@flcosh x))
 
-#;(define-prim (@@fltanh x))
+(define-prim (@@fltanh x))
 
-#;(define-prim-flonum (fltanh x)
+(define-prim-flonum (fltanh x)
   (@@fltanh x))
 
-#;(define-prim (@@flasinh x))
+(define-prim (@@flasinh x))
 
-#;(define-prim-flonum (flasinh x)
+(define-prim-flonum (flasinh x)
   (@@flasinh x))
 
-#;(define-prim (@@flacosh x))
+(define-prim (@@flacosh x))
 
-#;(define-prim-flonum (flacosh x)
+(define-prim-flonum (flacosh x)
   (@@flacosh x))
 
-#;(define-prim (@@flatanh x))
+(define-prim (@@flatanh x))
 
-#;(define-prim-flonum (flatanh x)
+(define-prim-flonum (flatanh x)
   (@@flatanh x))
 
-#;(define-prim (@@flexpt x y))
+(define-prim (@@flexpt x y))
 
-#;(define-prim-flonum (flexpt x y)
+(define-prim-flonum (flexpt x y)
   (@@flexpt x y))
 
-#;(define-prim (@@flsqrt x))
+(define-prim (@@flsqrt x))
 
-#;(define-prim-flonum (flsqrt x)
+(define-prim-flonum (flsqrt x)
   (@@flsqrt x))
 
-#;(define-prim (@@flsquare x))
+(define-prim (@@flsquare x))
 
-#;(define-prim-flonum (flsquare x)
+(define-prim-flonum (flsquare x)
   (@@flsquare x))
 
-#;(define-prim-fixnum (fixnum->flonum x)
+(define-prim-fixnum (fixnum->flonum x)
   (@@fixnum->flonum x))
 
-#;(define-prim (@@flcopysign x y))
+(define-prim (@@flcopysign x y))
 
-#;(define-prim (@@flonum->fixnum x))
-#;(define-prim (@@fixnum->flonum x))
-#;(define-prim (@@fixnum->flonum-exact? x))
+(define-prim (@@flonum->fixnum x))
+(define-prim (@@fixnum->flonum x))
+(define-prim (@@fixnum->flonum-exact? x))
 
-#;(define-prim (@@ratnum->flonum x  (nonzero-fractional-part? #f))
+(define-prim (@@ratnum->flonum x  (nonzero-fractional-part? #f))
   (let* ((num (macro-ratnum-numerator x))
          (n (@@abs num))
          (d (macro-ratnum-denominator x))
@@ -10314,7 +10314,7 @@ ___RESULT = result;
         (f1 (@@arithmetic-shift n (@@fx- p)) d)
         (f1 n (@@arithmetic-shift d p)))))
 
-#;(define-prim (@@exact-int->flonum x  (nonzero-fractional-part? #f))
+(define-prim (@@exact-int->flonum x  (nonzero-fractional-part? #f))
 
   (define (f1 x)
     (let* ((w ;; 2^(w-1) <= x < 2^w
@@ -10359,7 +10359,7 @@ ___RESULT = result;
           (@@flcopysign (f1 (@@negate x)) (macro-inexact--1))
           (f1 x))))
 
-#;(define-prim (@@flonum-expt2 n)
+(define-prim (@@flonum-expt2 n)
   (cond ((@@fxzero? n)
          (macro-inexact-+1))
         ((@@fxnegative? n)
@@ -10367,7 +10367,7 @@ ___RESULT = result;
         (else
          (@@expt (macro-inexact-+2) n))))
 
-#;(define-prim (@@flonum->exact-int x)
+(define-prim (@@flonum->exact-int x)
   (let loop1 ((z (@@flabs x))
               (n 1))
     (if (@@fl< @@bignum.inexact-mdigit-base z)
@@ -10392,7 +10392,7 @@ ___RESULT = result;
                   (@@negate result)
                   result))))))
 
-#;(define-prim (@@flonum->inexact-exponential-format x)
+(define-prim (@@flonum->inexact-exponential-format x)
 
   (define (exp-form-pos x y i)
     (let ((i*2 (@@fx+ i i)))
@@ -10438,7 +10438,7 @@ ___RESULT = result;
         z)
       (exp-form x)))
 
-#;(define-prim (@@flonum->exact-exponential-format x)
+(define-prim (@@flonum->exact-exponential-format x)
   (let ((z (@@flonum->inexact-exponential-format x)))
     (let ((y (@@vector-ref z 0)))
       (if (@@not (@@fl< y (macro-inexact-+2))) ;; +inf.0 or +nan.0?
@@ -10453,7 +10453,7 @@ ___RESULT = result;
       (@@vector-set! z 1 (@@fx- (@@vector-ref z 1) (macro-flonum-m-bits)))
       z)))
 
-#;(define-prim (@@flonum->exact x)
+(define-prim (@@flonum->exact x)
   (let ((y (@@flonum->exact-exponential-format x)))
     (@@exact-int.*-expt2
      (if (@@fxnegative? (@@vector-ref y 2))
@@ -10461,23 +10461,23 @@ ___RESULT = result;
          (@@vector-ref y 0))
      (@@vector-ref y 1))))
 
-#;(define-prim (@@flonum->ratnum x)
+(define-prim (@@flonum->ratnum x)
   (let ((y (@@flonum->exact x)))
     (if (macro-exact-int? y)
         (@@exact-int->ratnum y)
         y)))
 
-#;(define-prim (@@flonum->ieee754-32 x)
+(define-prim (@@flonum->ieee754-32 x)
   (@@u32vector-ref (@@f32vector x) 0))
 
-#;(define-prim (@@ieee754-32->flonum n)
+(define-prim (@@ieee754-32->flonum n)
   (let ((x (@@u32vector n)))
     (@@f32vector-ref x 0)))
 
-#;(define-prim (@@flonum->ieee754-64 x)
+(define-prim (@@flonum->ieee754-64 x)
   (@@u64vector-ref x 0))
 
-#;(define-prim (@@ieee754-64->flonum n)
+(define-prim (@@ieee754-64->flonum n)
   (let ((x (@@u64vector n)))
     (@@subtype-set! x (macro-subtype-flonum))
     x))
@@ -10487,35 +10487,35 @@ ___RESULT = result;
 ;;; Cpxnum operations
 ;;; -----------------
 
-#;(define-prim (@@cpxnum-make real imag)
+(define-prim (@@cpxnum-make real imag)
   (macro-cpxnum-make real imag))
 
-#;(define-prim (@@cpxnum-real x)
+(define-prim (@@cpxnum-real x)
   (macro-cpxnum-real x))
 
-#;(define-prim (@@cpxnum-imag x)
+(define-prim (@@cpxnum-imag x)
   (macro-cpxnum-imag x))
 
-#;(define-prim (@@cpxnum.= x y)
+(define-prim (@@cpxnum.= x y)
   (and (@@= (macro-cpxnum-real x) (macro-cpxnum-real y))
        (@@= (macro-cpxnum-imag x) (macro-cpxnum-imag y))))
 
-#;(define-prim (@@cpxnum.+ x y)
+(define-prim (@@cpxnum.+ x y)
   (let ((a (macro-cpxnum-real x)) (b (macro-cpxnum-imag x))
         (c (macro-cpxnum-real y)) (d (macro-cpxnum-imag y)))
     (@@make-rectangular (@@+ a c) (@@+ b d))))
 
-#;(define-prim (@@cpxnum.* x y)
+(define-prim (@@cpxnum.* x y)
   (let ((a (macro-cpxnum-real x)) (b (macro-cpxnum-imag x))
         (c (macro-cpxnum-real y)) (d (macro-cpxnum-imag y)))
     (@@make-rectangular (@@- (@@* a c) (@@* b d)) (@@+ (@@* a d) (@@* b c)))))
 
-#;(define-prim (@@cpxnum.- x y)
+(define-prim (@@cpxnum.- x y)
   (let ((a (macro-cpxnum-real x)) (b (macro-cpxnum-imag x))
         (c (macro-cpxnum-real y)) (d (macro-cpxnum-imag y)))
     (@@make-rectangular (@@- a c) (@@- b d))))
 
-#;(define-prim (@@cpxnum./ x y)
+(define-prim (@@cpxnum./ x y)
 
   (define (basic/ a b c d q)
     (@@make-rectangular (@@/ (@@+ (@@* a c) (@@* b d)) q)
@@ -10650,7 +10650,7 @@ ___RESULT = result;
                                                      inexact-d)
                                        (macro-inexact-+1))))))))))))
 
-#;(define-prim (@@noncpxnum->cpxnum x)
+(define-prim (@@noncpxnum->cpxnum x)
   (macro-cpxnum-make x 0))
 
 ;;;----------------------------------------------------------------------------
@@ -10659,7 +10659,7 @@ ___RESULT = result;
 
 ;;; This code is based on Pierre Lecuyer's MRG32K3A generator.
 
-#;(define-type random-source
+(define-type random-source
   id: 1b002758-f900-4e96-be5e-fa407e331fc0
   implementer: implement-type-random-source
   constructor: macro-make-random-source
@@ -10678,14 +10678,14 @@ ___RESULT = result;
   (make-f64vectors   unprintable: read-only:)
   )
 
-#;(define-check-type random-source
+(define-check-type random-source
   (macro-type-random-source)
   macro-random-source?)
 
-#;(implement-type-random-source)
-#;(implement-check-type-random-source)
+(implement-type-random-source)
+(implement-check-type-random-source)
 
-#;(define-prim (@@make-random-source-mrg32k3a)
+(define-prim (@@make-random-source-mrg32k3a)
 
   (@@define-macro (macro-w)
     65536)
@@ -11154,41 +11154,41 @@ ___RESULT = result;
      make-u8vectors
      make-f64vectors)))
 
-#;(define-prim (make-random-source)
+(define-prim (make-random-source)
   (@@make-random-source-mrg32k3a))
 
-#;(define-prim (random-source? obj)
+(define-prim (random-source? obj)
   (macro-force-vars (obj)
     (macro-random-source? obj)))
 
-#;(define-prim (@@random-source-state-ref rs)
+(define-prim (@@random-source-state-ref rs)
   ((macro-random-source-state-ref rs)))
 
-#;(define-prim (random-source-state-ref rs)
+(define-prim (random-source-state-ref rs)
   (macro-force-vars (rs)
     (macro-check-random-source rs 1 (random-source-state-ref rs)
       (@@random-source-state-ref rs))))
 
-#;(define-prim (@@random-source-state-set! rs new-state)
+(define-prim (@@random-source-state-set! rs new-state)
   ((macro-random-source-state-set! rs) rs new-state))
 
-#;(define-prim (random-source-state-set! rs new-state)
+(define-prim (random-source-state-set! rs new-state)
   (macro-force-vars (rs new-state)
     (macro-check-random-source rs 1 (random-source-state-set! rs new-state)
       (@@random-source-state-set! rs new-state))))
 
-#;(define-prim (@@random-source-randomize! rs)
+(define-prim (@@random-source-randomize! rs)
   ((macro-random-source-randomize! rs)))
 
-#;(define-prim (random-source-randomize! rs)
+(define-prim (random-source-randomize! rs)
   (macro-force-vars (rs)
     (macro-check-random-source rs 1 (random-source-randomize! rs)
       (@@random-source-randomize! rs))))
 
-#;(define-prim (@@random-source-pseudo-randomize! rs i j)
+(define-prim (@@random-source-pseudo-randomize! rs i j)
   ((macro-random-source-pseudo-randomize! rs) i j))
 
-#;(define-prim (random-source-pseudo-randomize! rs i j)
+(define-prim (random-source-pseudo-randomize! rs i j)
   (macro-force-vars (rs i j)
     (macro-check-random-source rs 1 (random-source-pseudo-randomize! rs i j)
       (if (not (macro-exact-int? i))
@@ -11201,21 +11201,21 @@ ___RESULT = result;
                       (@@raise-range-exception 3 random-source-pseudo-randomize! rs i j)
                       (@@random-source-pseudo-randomize! rs i j))))))))
 
-#;(define-prim (@@random-source-make-integers rs)
+(define-prim (@@random-source-make-integers rs)
   ((macro-random-source-make-integers rs)))
 
-#;(define-prim (random-source-make-integers rs)
+(define-prim (random-source-make-integers rs)
   (macro-force-vars (rs)
     (macro-check-random-source rs 1 (random-source-make-integers rs)
       (@@random-source-make-integers rs))))
 
-#;(define-prim (@@random-source-make-reals rs  (p (macro-absent-obj)))
+(define-prim (@@random-source-make-reals rs  (p (macro-absent-obj)))
   ((macro-random-source-make-reals rs)
    (if (eq? p (macro-absent-obj))
        (macro-inexact-+1)
        p)))
 
-#;(define-prim (random-source-make-reals rs  (p (macro-absent-obj)))
+(define-prim (random-source-make-reals rs  (p (macro-absent-obj)))
   (macro-force-vars (rs p)
     (macro-check-random-source rs 1 (random-source-make-reals rs p)
       (if (eq? p (macro-absent-obj))
@@ -11228,13 +11228,13 @@ ___RESULT = result;
                     (@@raise-range-exception 2 random-source-make-reals rs p)))
               (@@fail-check-finite-real 2 random-source-make-reals rs p))))))
 
-#;(define-prim (@@random-source-make-f64vectors rs  (p (macro-absent-obj)))
+(define-prim (@@random-source-make-f64vectors rs  (p (macro-absent-obj)))
   ((macro-random-source-make-f64vectors rs)
    (if (eq? p (macro-absent-obj))
        (macro-inexact-+1)
        p)))
 
-#;(define-prim (random-source-make-f64vectors rs  (p (macro-absent-obj)))
+(define-prim (random-source-make-f64vectors rs  (p (macro-absent-obj)))
   (macro-force-vars (rs p)
     (macro-check-random-source rs 1 (random-source-make-f64vectors rs p)
       (if (eq? p (macro-absent-obj))
@@ -11247,27 +11247,27 @@ ___RESULT = result;
                     (@@raise-range-exception 2 random-source-make-f64vectors rs p)))
               (@@fail-check-finite-real 2 random-source-make-f64vectors rs p))))))
 
-#;(define-prim (@@random-source-make-u8vectors rs)
+(define-prim (@@random-source-make-u8vectors rs)
   ((macro-random-source-make-u8vectors rs)))
 
-#;(define-prim (random-source-make-u8vectors rs)
+(define-prim (random-source-make-u8vectors rs)
   (macro-force-vars (rs)
     (macro-check-random-source rs 1 (random-source-make-u8vectors rs)
       (@@random-source-make-u8vectors rs))))
 
-#;(define default-random-source #f)
-#;(set! default-random-source (@@make-random-source-mrg32k3a))
+(define default-random-source #f)
+(set! default-random-source (@@make-random-source-mrg32k3a))
 
-#;(define random-integer
+(define random-integer
   (@@random-source-make-integers default-random-source))
 
-#;(define random-real
+(define random-real
   (@@random-source-make-reals default-random-source))
 
-#;(define random-u8vector
+(define random-u8vector
   (@@random-source-make-u8vectors default-random-source))
 
-#;(define random-f64vector
+(define random-f64vector
   (@@random-source-make-f64vectors default-random-source))
 
 ;;;============================================================================
