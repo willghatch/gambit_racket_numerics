@@ -106,9 +106,30 @@
       (bitwise-and old-adigit (bitwise-not mask))
       (* mdigit (expt mdigit-modulus mdigit-subindex))))
   (vector-set! (adigits x) adigit-index new-adigit))
-(define (@@bignum.mdigit-mul! x i y j multiplier carry)
+#;(define (@@bignum.mdigit-mul! x i y j multiplier carry)
   (println (list '@@bignum.mdigit-mul! x i y j multiplier carry))
+
+  ;; this is more or less what it's defined as in _t-univ-4.scm
+  #;(define (@@bignum.mdigit-mul! x i y j multiplier carry)
+    (define inttemp1 (+ (+ (array-index (bignum-digits x) (fixnum-unbox i))
+                            (* (array-index (bignum-digits y) (fixnum-unbox j))
+                               (fixnum-unbox multiplier)))
+                         (fixnum-unbox carry)))
+    (vector-set! (bignum-digits x) (fixnum-unbox i)
+                 (cast 'bigdigit (bitand (rts-field-use 'inttemp1) (int 16383))))
+    ;; return
+    (fixnum-box (>> (rts-field-use 'inttemp1) (int 14))))
+
   (error 'unimplemented)) ;; Incomplete
+(define (@@bignum.mdigit-mul! product p-ix bfactor bf-ix fixnum-factor carry)
+  (define tmp (+ (vector-ref (adigits product) p-ix)
+                 (* (vector-ref (adigits bfactor) bf-ix)
+                    fixnum-factor)
+                 carry))
+  (vector-set! (adigits product) p-ix (bitwise-and tmp mdigit-ones))
+  ;; return new carry
+  (arithmetic-shift tmp mdigit-width))
+
 (define (@@bignum.mdigit-div! x i y j quotient borrow)
   (println (list '@@bignum.mdigit-div! x i y j quotient borrow))
   (error 'unimplemented)) ;; Incomplete
@@ -131,4 +152,4 @@
 (define adigit-ones (- adigit-modulus 1))
 (define mdigit-ones (- mdigit-modulus 1))
 (define mdigits-in-adigit (/ @@bignum.adigit-width @@bignum.mdigit-width))
-  
+
