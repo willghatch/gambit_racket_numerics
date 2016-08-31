@@ -128,20 +128,56 @@
                  carry))
   (vector-set! (adigits product) p-ix (bitwise-and tmp mdigit-ones))
   ;; return new carry
-  (arithmetic-shift tmp mdigit-width))
+  (arithmetic-shift tmp (- mdigit-width)))
 
-(define (@@bignum.mdigit-div! x i y j quotient borrow)
+#;(define (@@bignum.mdigit-div! x i y j quotient borrow)
   (println (list '@@bignum.mdigit-div! x i y j quotient borrow))
   (error 'unimplemented)) ;; Incomplete
-(define (@@bignum.mdigit-quotient u j v_n-1)
+(define (@@bignum.mdigit-div! x i y j quotient borrow)
+  (define inttemp1
+    (+ (- (vector-ref (adigits x)
+                      i)
+          (* (vector-ref (adigits y)
+                         j)
+             quotient))
+       borrow))
+  (vector-set! (adigits x)
+               i
+               (bitwise-and inttemp1
+                            mdigit-ones))
+  (define temp-shifted (arithmetic-shift inttemp1 (- mdigit-width)))
+  (if (> temp-shifted 0)
+      (- temp-shifted mdigit-ones)
+      temp-shifted))
+#;(define (@@bignum.mdigit-quotient u j v_n-1)
   (println (list '@@bignum.mdigit-quotient u j v_n-1))
   (error 'unimplemented)) ;; Incomplete
-(define (@@bignum.mdigit-remainder u j v_n-1 q-hat)
+(define (@@bignum.mdigit-quotient u j v_n-1)
+  (quotient
+   (+ (arithmetic-shift (vector-ref (adigits u) j)
+                        mdigit-width)
+      (vector-ref (adigits u)
+                  (sub1 j)))
+   v_n-1))
+#;(define (@@bignum.mdigit-remainder u j v_n-1 q-hat)
   (println (list '@@bignum.mdigit-remainder u j v_n-1 q-hat))
   (error 'unimplemented)) ;; Incomplete
-(define (@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2)
+(define (@@bignum.mdigit-remainder arg1 arg2 arg3 arg4)
+  (- (+ (arithmetic-shift (vector-ref (adigits arg1)
+                                      arg2)
+                          mdigit-width)
+        (vector-ref (adigits arg1)
+                    (sub1 arg2)))
+     (* arg3
+        arg4)))
+#;(define (@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2)
   (println (list '@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2))
   (error 'unimplemented)) ;; Incomplete
+(define (@@bignum.mdigit-test? arg1 arg2 arg3 arg4)
+  (> (* arg1 arg2)
+     (+ (arithmetic-shift arg3 mdigit-width)
+        arg4)))
+
 (define @@bignum.fdigit-width fdigit-width)
 (define @@bignum.mdigit-width mdigit-width)
 (define @@bignum.adigit-width adigit-width)
