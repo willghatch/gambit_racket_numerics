@@ -39,7 +39,16 @@
       (define adigit (modulo magnitude adigit-modulus))
       (set! magnitude (quotient magnitude adigit-modulus))
       adigit))
-  (if (negative? x) (bignum.- (@@fixnum->bignum 0) (bignum adigits)) (bignum adigits)))
+
+  ;; if the most significant digit is set, it will be treated as negative unless we pad it
+  (define padded-adigits
+    (if (@@bignum.negative? (bignum adigits))
+        (vector-append  adigits (vector 0))
+        adigits))
+
+  (if (negative? x)
+      (bignum.- (@@fixnum->bignum 0) (bignum padded-adigits))
+      (bignum padded-adigits)))
 
 (define (bignum->rktnum x)
   (define adigit-modulus (expt 2 @@bignum.adigit-width))
