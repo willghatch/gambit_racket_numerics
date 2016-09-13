@@ -34,6 +34,7 @@
          @@bignum.adigit-width)
 
 ;; The bignum representation is a struct-wrapped vector of adigits, represented by racket numbers
+;; Note that the most significant adigit is at the highest index.
 
 (struct bignum (adigits) #:mutable #:transparent)
 (define-syntax-rule (adigits x) (bignum-adigits x))
@@ -82,7 +83,6 @@
 (define (@@bignum.adigit-copy! x i y j)
   (vector-set! (adigits x) i (vector-ref (adigits y) j)))
 (define (@@bignum.adigit-cat! x i hi j lo k divider)
-  ;(println (list '@@bignum.adigit-cat! x i hi j lo k divider))
   (define hi-mask (* adigit-ones (expt 2 divider)))
   (define lo-mask (quotient adigit-ones (expt 2 (- @@bignum.adigit-width divider))))
   (vector-set! (adigits x) i
@@ -110,21 +110,19 @@
       (bitwise-and old-adigit (bitwise-not mask))
       (* mdigit (expt mdigit-modulus mdigit-subindex))))
   (vector-set! (adigits x) adigit-index new-adigit))
-#;(define (@@bignum.mdigit-mul! x i y j multiplier carry)
-  (println (list '@@bignum.mdigit-mul! x i y j multiplier carry))
 
-  ;; this is more or less what it's defined as in _t-univ-4.scm
-  #;(define (@@bignum.mdigit-mul! x i y j multiplier carry)
+;; The following bignum.mdigit-whatever functions are basically lifted straight
+;; from <gambit-root>/gsc/_t-univ-4.scm
+
+#;(define (@@bignum.mdigit-mul! x i y j multiplier carry)
     (define inttemp1 (+ (+ (array-index (bignum-digits x) (fixnum-unbox i))
-                            (* (array-index (bignum-digits y) (fixnum-unbox j))
-                               (fixnum-unbox multiplier)))
-                         (fixnum-unbox carry)))
+                           (* (array-index (bignum-digits y) (fixnum-unbox j))
+                              (fixnum-unbox multiplier)))
+                        (fixnum-unbox carry)))
     (vector-set! (bignum-digits x) (fixnum-unbox i)
                  (cast 'bigdigit (bitand (rts-field-use 'inttemp1) (int 16383))))
     ;; return
     (fixnum-box (>> (rts-field-use 'inttemp1) (int 14))))
-
-  (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-mul! product p-ix bfactor bf-ix fixnum-factor carry)
   (define tmp (+ (@@bignum.mdigit-ref product p-ix)
                  (* (@@bignum.mdigit-ref bfactor bf-ix)
@@ -134,9 +132,6 @@
   ;; return new carry
   (arithmetic-shift tmp (- mdigit-width)))
 
-#;(define (@@bignum.mdigit-div! x i y j quotient borrow)
-  (println (list '@@bignum.mdigit-div! x i y j quotient borrow))
-  (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-div! x i y j quotient borrow)
   (define inttemp1
     (+ (- (@@bignum.mdigit-ref x i)
@@ -147,10 +142,6 @@
   (if (> temp-shifted 0)
       (- temp-shifted mdigit-ones)
       temp-shifted))
-#;(define (@@bignum.mdigit-quotient u j v_n-1)
-  (println (list '@@bignum.mdigit-quotient u j v_n-1))
-  (error 'unimplemented)) ;; Incomplete
-;; error on line 698
 (define (@@bignum.mdigit-quotient u j v_n-1)
   (quotient
    (+ (arithmetic-shift (@@bignum.mdigit-ref u j)
@@ -158,9 +149,6 @@
       (@@bignum.mdigit-ref u
                   (sub1 j)))
    v_n-1))
-#;(define (@@bignum.mdigit-remainder u j v_n-1 q-hat)
-  (println (list '@@bignum.mdigit-remainder u j v_n-1 q-hat))
-  (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-remainder arg1 arg2 arg3 arg4)
   (- (+ (arithmetic-shift (@@bignum.mdigit-ref arg1
                                       arg2)
@@ -169,9 +157,6 @@
                     (sub1 arg2)))
      (* arg3
         arg4)))
-#;(define (@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2)
-  (println (list '@@bignum.mdigit-test? q-hat v_n-2 r-hat u_j-2))
-  (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-test? arg1 arg2 arg3 arg4)
   (> (* arg1 arg2)
      (+ (arithmetic-shift arg3 mdigit-width)
