@@ -50,7 +50,6 @@
         (* adigit (expt adigit-modulus i)))))
 
 (define @@eqv? (λ (a b)
-                 (eprintf "eqv? with ~a ~b~n" a b)
                  (cond
                    [(bignum? a)
                     (@@eqv? (bignum->rktnum a) b)]

@@ -76,7 +76,9 @@
   (vector-set! (adigits x) i (modulo (+ diff adigit-modulus) adigit-modulus))
   (if (< diff 0) 1 0))
 (define (@@bignum.adigit-shrink! x n)
-  (set-bignum-adigits! x (vector-take (adigits x) n)))
+  (set-bignum-adigits! x (vector-take (adigits x) n))
+  ;; return the bignum rather than void
+  x)
 (define (@@bignum.adigit-copy! x i y j)
   (vector-set! (adigits x) i (vector-ref (adigits y) j)))
 (define (@@bignum.adigit-cat! x i hi j lo k divider)
