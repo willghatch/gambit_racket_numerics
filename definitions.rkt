@@ -40,7 +40,6 @@
 (define @@set-car! (lambda (x y) (vector-set! x 0 y)))
 (define @@set-cdr! (lambda (x y) (vector-set! x 1 y)))
 
-(define @@eqv? eqv?)
 (define @@not not)
 (define @@fixnum? fixnum?)
 (define @@fxnot fxnot)

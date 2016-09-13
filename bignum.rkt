@@ -38,6 +38,8 @@
 (struct bignum (adigits) #:mutable #:transparent)
 (define-syntax-rule (adigits x) (bignum-adigits x))
 
+
+
 (define @@bignum? bignum?)
 
 (define (@@bignum.negative? x)
@@ -78,7 +80,7 @@
 (define (@@bignum.adigit-copy! x i y j)
   (vector-set! (adigits x) i (vector-ref (adigits y) j)))
 (define (@@bignum.adigit-cat! x i hi j lo k divider)
-  (println (list '@@bignum.adigit-cat! x i hi j lo k divider))
+  ;(println (list '@@bignum.adigit-cat! x i hi j lo k divider))
   (define hi-mask (* adigit-ones (expt 2 divider)))
   (define lo-mask (quotient adigit-ones (expt 2 (- @@bignum.adigit-width divider))))
   (vector-set! (adigits x) i
@@ -122,11 +124,11 @@
 
   (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-mul! product p-ix bfactor bf-ix fixnum-factor carry)
-  (define tmp (+ (vector-ref (adigits product) p-ix)
-                 (* (vector-ref (adigits bfactor) bf-ix)
+  (define tmp (+ (@@bignum.mdigit-ref product p-ix)
+                 (* (@@bignum.mdigit-ref bfactor bf-ix)
                     fixnum-factor)
                  carry))
-  (vector-set! (adigits product) p-ix (bitwise-and tmp mdigit-ones))
+  (@@bignum.mdigit-set! product p-ix (bitwise-and tmp mdigit-ones))
   ;; return new carry
   (arithmetic-shift tmp (- mdigit-width)))
 
@@ -135,16 +137,10 @@
   (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-div! x i y j quotient borrow)
   (define inttemp1
-    (+ (- (vector-ref (adigits x)
-                      i)
-          (* (vector-ref (adigits y)
-                         j)
-             quotient))
+    (+ (- (@@bignum.mdigit-ref x i)
+          (* (@@bignum.mdigit-ref y j) quotient))
        borrow))
-  (vector-set! (adigits x)
-               i
-               (bitwise-and inttemp1
-                            mdigit-ones))
+  (@@bignum.mdigit-set! x i (bitwise-and inttemp1 mdigit-ones))
   (define temp-shifted (arithmetic-shift inttemp1 (- mdigit-width)))
   (if (> temp-shifted 0)
       (- temp-shifted mdigit-ones)
@@ -152,21 +148,22 @@
 #;(define (@@bignum.mdigit-quotient u j v_n-1)
   (println (list '@@bignum.mdigit-quotient u j v_n-1))
   (error 'unimplemented)) ;; Incomplete
+;; error on line 698
 (define (@@bignum.mdigit-quotient u j v_n-1)
   (quotient
-   (+ (arithmetic-shift (vector-ref (adigits u) j)
+   (+ (arithmetic-shift (@@bignum.mdigit-ref u j)
                         mdigit-width)
-      (vector-ref (adigits u)
+      (@@bignum.mdigit-ref u
                   (sub1 j)))
    v_n-1))
 #;(define (@@bignum.mdigit-remainder u j v_n-1 q-hat)
   (println (list '@@bignum.mdigit-remainder u j v_n-1 q-hat))
   (error 'unimplemented)) ;; Incomplete
 (define (@@bignum.mdigit-remainder arg1 arg2 arg3 arg4)
-  (- (+ (arithmetic-shift (vector-ref (adigits arg1)
+  (- (+ (arithmetic-shift (@@bignum.mdigit-ref arg1
                                       arg2)
                           mdigit-width)
-        (vector-ref (adigits arg1)
+        (@@bignum.mdigit-ref arg1
                     (sub1 arg2)))
      (* arg3
         arg4)))
@@ -182,7 +179,7 @@
 (define @@bignum.mdigit-width mdigit-width)
 (define @@bignum.adigit-width adigit-width)
 
-(define most-significant-adigit-bit (expt 2 @@bignum.adigit-width))
+(define most-significant-adigit-bit (expt 2 (sub1 @@bignum.adigit-width)))
 (define adigit-modulus (expt 2 @@bignum.adigit-width))
 (define mdigit-modulus (expt 2 @@bignum.mdigit-width))
 (define adigit-ones (- adigit-modulus 1))

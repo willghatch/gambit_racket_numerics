@@ -5,6 +5,7 @@
          "constants.rkt")
 
 (provide to-rktnum from-rktnum rktnum->bignum bignum->rktnum)
+(provide @@eqv?)
 
 (define (to-rktnum x)
   (cond ((fixnum? x) x)
@@ -47,3 +48,12 @@
       (for/sum ((adigit (in-vector (bignum-adigits x)))
                 (i (in-naturals)))
         (* adigit (expt adigit-modulus i)))))
+
+(define @@eqv? (λ (a b)
+                 (eprintf "eqv? with ~a ~b~n" a b)
+                 (cond
+                   [(bignum? a)
+                    (@@eqv? (bignum->rktnum a) b)]
+                   [(bignum? b)
+                    (eqv? a (bignum->rktnum b))]
+                   [else (eqv? a b)])))
