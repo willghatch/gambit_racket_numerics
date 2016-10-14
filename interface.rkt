@@ -8,7 +8,9 @@
          to-rktnum)
 
 (define lookup-table
-  `((,+ . ,gambit-+)))
+  `((,+ . ,gambit-+)
+    (,- . ,gambit--)
+    ))
 
 (define (gambit-lookup fun)
   (let ((result (assoc fun lookup-table)))

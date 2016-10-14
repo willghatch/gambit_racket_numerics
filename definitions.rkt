@@ -108,7 +108,7 @@
 (define @@flsquare (lambda (x) (* x x)))
 (define @@flcopysign (lambda (x y) (fl* (flabs x) (fl/ y (flabs y)))))
 (define @@fl<= fl<=)
-(define @@fl- (case-lambda ((x) (fl- 0.0 x))
+(define @@fl- (case-lambda ((x) (fl* -1.0 x))
                            ((l r) (fl- l r))))
 (define @@fixnum->flonum fx->fl)
 (define @@flnan? (lambda (x) (not (fl= x x))))

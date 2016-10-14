@@ -9,3 +9,9 @@
     (() 0)
     ((x) x)
     ((x y . r) (apply gambit-+ (@@+ x y) r))))
+
+(define gambit--
+  (case-lambda
+    ((x) (@@- 0 x))
+    ((x y) (@@- x y))
+    ((x y . r) (apply gambit-- (@@- x y) r))))
