@@ -52,7 +52,7 @@
   (< (vector-ref (adigits x) i) (vector-ref (adigits y) i)))
 (define (@@fixnum->bignum x) (bignum (vector (modulo (+ x adigit-modulus) adigit-modulus))))
 (define (@@bignum.make k x complement?)
-  (define y (make-vector k 0))
+  (define y (make-vector k (if (and (bignum? x) (@@bignum.negative? x)) adigit-ones 0)))
   (for ((adigit (in-vector (adigits (or x (bignum (vector))))))
         (i (in-range k)))
     (vector-set! y i adigit))
